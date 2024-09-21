@@ -1,3 +1,5 @@
+use uuid::Uuid;
+
 use crate::core::domain::entities::authenticator::Authenticator;
 
 pub struct UserCredentials {
@@ -12,15 +14,39 @@ impl UserCredentials {
 }
 
 pub struct User {
-    pub credentials: UserCredentials,
+    id: Option<Uuid>,
+    pub credentials: Option<UserCredentials>,
+    pub password_hash: String,
+    pub is_authenticated: bool,
 }
 
 impl User {
-    pub fn new(credentials: UserCredentials) -> User {
-        User { credentials }
+    pub fn new(
+        id: Option<Uuid>,
+        credentials: Option<UserCredentials>,
+        password_hash: String,
+    ) -> User {
+        User {
+            id,
+            credentials,
+            password_hash,
+            is_authenticated: false,
+        }
     }
 
-    pub fn authenticate(&self, authenticator: Authenticator) {
-        authenticator.authenticate(self);
+    pub fn get_id(&self) -> Option<Uuid> {
+        return self.id;
+    }
+
+    pub fn authenticate(&mut self, authenticator: &mut Authenticator) {
+        print!("Authenticating user");
+
+        let is_authenticated = authenticator.authenticate(&self);
+
+        if is_authenticated {
+            self.is_authenticated = true;
+        }
+
+        return;
     }
 }

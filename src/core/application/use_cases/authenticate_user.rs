@@ -1,4 +1,5 @@
 use actix_session::Session;
+use uuid::Uuid;
 
 use crate::core::domain::entities::authenticator::Authenticator;
 use crate::core::domain::entities::user::{User, UserCredentials};
@@ -28,11 +29,13 @@ impl UseCase<AuthenticateUserInputDto, ()> for AuthenticateUser {
     }
 
     fn execute(&self, input: AuthenticateUserInputDto) -> () {
-        let authenticator = Authenticator::new();
-
+        let mut authenticator = Authenticator::new(input.session);
         let user_credentials = UserCredentials::new(input.username, input.password);
-        let user = User::new(user_credentials);
 
-        user.authenticate(authenticator);
+        let test_id = Uuid::new_v4();
+
+        let mut user = User::new(Some(test_id), Some(user_credentials), "$argon2id$v=19$m=19456,t=2,p=1$IYfzwMcQ8cphz7Y8+WFtyg$Hc4MuXJdNYpEl/hunDxVUzSqbfgJXPu+0OdBijlAUI4".to_string());
+
+        user.authenticate(&mut authenticator);
     }
 }

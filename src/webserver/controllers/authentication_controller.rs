@@ -15,8 +15,7 @@ use crate::{
 
 #[post("/authenticate")]
 pub async fn authenticate(session: Session) -> impl Responder {
-    let input =
-        AuthenticateUserInputDto::new("username".to_string(), "password".to_string(), session);
+    let input = AuthenticateUserInputDto::new("username".to_string(), "123".to_string(), session);
 
     let authenticate_user = AuthenticateUser::new();
     authenticate_user.execute(input);

@@ -8,3 +8,4 @@ actix-session = { version = "0.10.0", features = ["redis-session"] }
 actix-web = "4.9.0"
 argon2 = "0.5.3"
 oauth2 = "4.4.2"
+uuid = { version = "1.10.0", features = ["v4"] }
