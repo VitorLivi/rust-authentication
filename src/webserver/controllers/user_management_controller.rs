@@ -7,8 +7,6 @@ use crate::{
 
 #[post("/sign_up")]
 pub async fn sign_up() -> impl Responder {
-    print!("SIGNING UP");
-
     let input = CreateUserInputDto::new("potato".to_string(), "123".to_string());
 
     let create_user = CreateUser::new();

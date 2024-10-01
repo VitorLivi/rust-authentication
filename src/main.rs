@@ -2,6 +2,7 @@ use actix_session::{storage::RedisSessionStore, SessionMiddleware};
 use actix_web::{cookie::Key, web, App, HttpResponse, HttpServer};
 
 mod core;
+mod schema;
 mod shared;
 mod webserver;
 

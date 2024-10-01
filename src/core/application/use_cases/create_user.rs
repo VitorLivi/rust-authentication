@@ -2,7 +2,8 @@ use uuid::Uuid;
 
 use crate::core::domain::entities::authenticator::Authenticator;
 use crate::core::domain::entities::user::User;
-use crate::shared::use_cases::use_case::UseCase;
+use crate::core::domain::repository::user_repository::UserRepository;
+use crate::shared::application::use_cases::use_case::UseCase;
 
 pub struct CreateUserInputDto {
     username: String,
@@ -15,23 +16,21 @@ impl CreateUserInputDto {
     }
 }
 
-pub struct CreateUser {}
+pub struct CreateUser {
+    user_repository: dyn UserRepository,
+}
+
+impl CreateUser {
+    pub fn new(user_repository: dyn UserRepository) -> CreateUser {
+        CreateUser { user_repository }
+    }
+}
 
 impl UseCase<CreateUserInputDto, ()> for CreateUser {
-    fn new() -> CreateUser {
-        CreateUser {}
-    }
-
     fn execute(&self, input: CreateUserInputDto) -> () {
-        print!("CREATING USER");
-
-        let uuid = Uuid::new_v4();
-
         let password_hash = Authenticator::create_hash(&input.password);
+        let user = User::new(None, None, password_hash);
 
-        println!("User created with id: {}", password_hash);
-        let user = User::new(Some(uuid), None, password_hash);
-
-        // store user in database
+        self.user_repository.save(user);
     }
 }

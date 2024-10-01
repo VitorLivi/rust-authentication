@@ -27,7 +27,7 @@ impl User {
         password_hash: String,
     ) -> User {
         User {
-            id,
+            id: id.or(Some(Uuid::new_v4())),
             credentials,
             password_hash,
             is_authenticated: false,

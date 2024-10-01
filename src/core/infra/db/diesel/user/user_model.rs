@@ -1,5 +1,6 @@
 use std::time::SystemTime;
 
+use crate::schema::user;
 use diesel::{prelude::Queryable, Selectable};
 
 #[derive(Queryable, Selectable)]
