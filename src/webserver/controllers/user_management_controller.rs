@@ -1,20 +1,25 @@
-use actix_web::{post, web::ServiceConfig, HttpResponse, Responder};
-
 use crate::{
-    core::application::use_cases::create_user::{CreateUser, CreateUserInputDto},
-    shared::use_cases::use_case::UseCase,
+    core::{
+        application::use_cases::create_user::{CreateUser, CreateUserInputDto},
+        infra::db::diesel::user::user_repository::UserDieselRepository,
+    },
+    schema::user,
+    shared::application::use_cases::use_case::UseCase,
+    webserver::config::database::Database,
 };
+use actix_web::{post, web, HttpResponse, Responder};
 
 #[post("/sign_up")]
-pub async fn sign_up() -> impl Responder {
-    let input = CreateUserInputDto::new("potato".to_string(), "123".to_string());
+pub async fn sign_up(payload: web::Json<CreateUserInputDto>) -> impl Responder {
+    let connection = Database::get_connection();
+    let user_repository = UserDieselRepository::new(connection, user::table);
+    let create_user = CreateUser::new(Box::new(user_repository));
 
-    let create_user = CreateUser::new();
-    create_user.execute(input);
+    create_user.execute(payload.0);
 
     HttpResponse::Ok().body("OK")
 }
 
-pub fn config_routes(cfg: &mut ServiceConfig) {
+pub fn config_routes(cfg: &mut web::ServiceConfig) {
     cfg.service(sign_up);
 }

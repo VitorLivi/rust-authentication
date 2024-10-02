@@ -8,23 +8,19 @@ use super::user_model::UserModel;
 
 pub struct UserDieselRepository {
     connection: diesel::PgConnection,
-    user_model: UserModel,
     user_schema: user::table,
 }
 
 impl UserDieselRepository {
-    pub fn new(
-        connection: diesel::PgConnection,
-        user_model: UserModel,
-        user_schema: user::table,
-    ) -> Self {
+    pub fn new(connection: diesel::PgConnection, user_schema: user::table) -> Self {
         UserDieselRepository {
             connection,
-            user_model,
             user_schema,
         }
     }
 }
+
+impl UserRepository for UserDieselRepository {}
 
 impl Repository<User> for UserDieselRepository {
     fn find_all(&self) -> Vec<User> {
@@ -64,5 +60,3 @@ impl Repository<User> for UserDieselRepository {
         }
     }
 }
-
-impl UserRepository for UserDieselRepository {}

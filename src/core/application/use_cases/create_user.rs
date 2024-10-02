@@ -1,13 +1,11 @@
-use uuid::Uuid;
-
 use crate::core::domain::entities::authenticator::Authenticator;
 use crate::core::domain::entities::user::User;
 use crate::core::domain::repository::user_repository::UserRepository;
 use crate::shared::application::use_cases::use_case::UseCase;
 
 pub struct CreateUserInputDto {
-    username: String,
-    password: String,
+    pub username: String,
+    pub password: String,
 }
 
 impl CreateUserInputDto {
@@ -17,11 +15,11 @@ impl CreateUserInputDto {
 }
 
 pub struct CreateUser {
-    user_repository: dyn UserRepository,
+    user_repository: Box<dyn UserRepository + 'static>,
 }
 
 impl CreateUser {
-    pub fn new(user_repository: dyn UserRepository) -> CreateUser {
+    pub fn new(user_repository: Box<dyn UserRepository + 'static>) -> CreateUser {
         CreateUser { user_repository }
     }
 }

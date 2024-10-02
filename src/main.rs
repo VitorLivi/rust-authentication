@@ -6,11 +6,13 @@ mod schema;
 mod shared;
 mod webserver;
 
-use webserver::controllers::config_all_routes;
+use webserver::{config::database::Database, controllers::config_all_routes};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let secret_key = Key::generate();
+
+    Database::config();
 
     println!("MASTER: {:?}", secret_key.master());
     println!("ENCRYPTION: {:?}", secret_key.encryption());
