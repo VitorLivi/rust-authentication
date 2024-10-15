@@ -1,30 +1,33 @@
-// create a singleton to hold the database connection
-
 use diesel::pg::PgConnection;
-use diesel::r2d2::{ConnectionManager, Pool};
+use diesel::r2d2::{ConnectionManager, Pool, PooledConnection};
+use diesel::Connection;
 use std::env;
+use std::sync::{Mutex, Once};
 
 pub struct Database {
-    connection_pool: Option<&'static Pool<ConnectionManager<PgConnection>>>,
+    pub connection_pool: Pool<ConnectionManager<PgConnection>>,
 }
 
 impl Database {
-    pub fn config() -> Database {
+    fn config() -> PgConnection {
         let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-        let manager = ConnectionManager::<PgConnection>::new(database_url);
-        let connection_pool = Pool::builder()
-            .build(manager)
-            .expect("Failed to create pool");
 
-        Self::connection_pool = Some(connection_pool);
+        PgConnection::establish(&database_url)
+            .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
     }
 
-    pub fn get_connection() -> PgConnection {
-        if !Self.connection_pool {
-            let me = Database::config();
-            Self.connection_pool = Some(&me.connection_pool);
-        }
+    pub fn get_connection() -> &PgConnection {
+        static mut CONN: Option<PgConnection> = None;
+        static INIT: Once = Once::new();
+        unsafe {
+            INIT.call_once(|| {
+                CONN = Some(Database::config());
+            });
 
-        Database::conection_pool
+            return match CONN {
+                Some(ref conn) => conn,
+                None => panic!("Failed to initialize connection"),
+            };
+        }
     }
 }

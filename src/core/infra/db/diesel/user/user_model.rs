@@ -1,18 +1,18 @@
 use std::time::SystemTime;
 
 use crate::schema::user;
-use diesel::{prelude::Queryable, Selectable};
+use diesel::{pg::Pg, prelude::Queryable, Selectable};
 
 #[derive(Queryable, Selectable)]
-#[diesel(table_name = user)]
+#[diesel(table_name = user, check_for_backend(Pg))]
 pub struct UserModel {
-    id: i32,
-    created_at: SystemTime,
-    updated_at: SystemTime,
-    first_name: String,
-    last_name: String,
-    username: String,
-    email: String,
-    password_hash: String,
-    status: i32,
+    pub id: String,
+    pub created_at: SystemTime,
+    pub updated_at: SystemTime,
+    pub first_name: String,
+    pub last_name: String,
+    pub username: Option<String>,
+    pub email: String,
+    pub password_hash: String,
+    pub status: Option<i32>,
 }

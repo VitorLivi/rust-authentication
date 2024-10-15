@@ -3,7 +3,7 @@ use uuid::Uuid;
 
 use crate::core::domain::entities::authenticator::Authenticator;
 use crate::core::domain::entities::user::{User, UserCredentials};
-use crate::shared::use_cases::use_case::UseCase;
+use crate::shared::application::use_cases::use_case::UseCase;
 
 pub struct AuthenticateUserInputDto {
     username: String,
@@ -23,11 +23,13 @@ impl AuthenticateUserInputDto {
 
 pub struct AuthenticateUser {}
 
-impl UseCase<AuthenticateUserInputDto, ()> for AuthenticateUser {
-    fn new() -> AuthenticateUser {
+impl AuthenticateUser {
+    pub fn new() -> AuthenticateUser {
         AuthenticateUser {}
     }
+}
 
+impl UseCase<AuthenticateUserInputDto, ()> for AuthenticateUser {
     fn execute(&self, input: AuthenticateUserInputDto) -> () {
         let mut authenticator = Authenticator::new(input.session);
         let user_credentials = UserCredentials::new(input.username, input.password);

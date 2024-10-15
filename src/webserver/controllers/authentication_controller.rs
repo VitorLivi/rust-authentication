@@ -1,16 +1,10 @@
 use actix_session::Session;
-use actix_web::{
-    get, post,
-    web::{self, ServiceConfig},
-    App, HttpResponse, HttpServer, Responder,
-};
+use actix_web::{get, post, web::ServiceConfig, HttpResponse, Responder};
 
-use crate::{
-    core::{
-        application::use_cases::authenticate_user::{AuthenticateUser, AuthenticateUserInputDto},
-        domain::entities::authenticator::Authenticator,
-    },
-    shared::use_cases::use_case::UseCase,
+use crate::shared::application::use_cases::use_case::UseCase;
+
+use crate::core::application::use_cases::authenticate_user::{
+    AuthenticateUser, AuthenticateUserInputDto,
 };
 
 #[post("/authenticate")]

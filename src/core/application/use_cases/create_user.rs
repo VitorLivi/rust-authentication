@@ -1,8 +1,13 @@
+use actix_web::FromRequest;
+use futures::FutureExt;
+use serde::Deserialize;
+
 use crate::core::domain::entities::authenticator::Authenticator;
 use crate::core::domain::entities::user::User;
 use crate::core::domain::repository::user_repository::UserRepository;
 use crate::shared::application::use_cases::use_case::UseCase;
 
+#[derive(Deserialize)]
 pub struct CreateUserInputDto {
     pub username: String,
     pub password: String,
