@@ -1,27 +1,28 @@
-use std::borrow::{Borrow, BorrowMut};
+use uuid::Uuid;
 
 use diesel::{
-    dsl::select,
-    query_dsl::methods::LoadQuery,
     r2d2::{ConnectionManager, PooledConnection},
-    PgConnection, QueryDsl, Queryable, RunQueryDsl, SelectableHelper, Table,
+    ExpressionMethods, PgConnection, QueryDsl, RunQueryDsl, SelectableHelper,
 };
 
 use crate::{
     core::domain::{entities::user::User, repository::user_repository::UserRepository},
-    schema::user::{self, all_columns, table},
+    schema::user::{self},
     shared::domain::repository::repository::Repository,
 };
 
 use super::{user_mapper::UserMapper, user_model::UserModel};
 
 pub struct UserDieselRepository {
-    connection: PgConnection,
+    connection: PooledConnection<ConnectionManager<PgConnection>>,
     user_schema: user::table,
 }
 
 impl UserDieselRepository {
-    pub fn new(connection: PgConnection, user_schema: user::table) -> Self {
+    pub fn new(
+        connection: PooledConnection<ConnectionManager<PgConnection>>,
+        user_schema: user::table,
+    ) -> Self {
         UserDieselRepository {
             connection,
             user_schema,
@@ -33,11 +34,10 @@ impl UserRepository for UserDieselRepository {}
 
 impl Repository<User> for UserDieselRepository {
     fn find_all(&mut self) -> Vec<User> {
-        let mutable_connection = self.connection.borrow_mut();
         let users = self
             .user_schema
             .select(UserModel::as_select())
-            .load::<UserModel>(mutable_connection);
+            .load::<UserModel>(&mut self.connection);
 
         match users {
             Ok(users) => users
@@ -49,9 +49,18 @@ impl Repository<User> for UserDieselRepository {
         }
     }
 
-    fn find_by_id(&self, id: i32) -> Option<User> {}
+    fn find_by_id(&mut self, id: Uuid) -> Option<User> {
+        let user_result = self
+            .user_schema
+            .filter(user::id.eq(id))
+            .first::<UserModel>(&mut self.connection);
 
-    fn save(&self, user: User) -> Result<User, String> {}
+        match user_result {
+            Ok(user_model) => Some(UserMapper::to_entity(&user_model)),
+            Err(_) => None,
+        }
+    }
 
-    fn delete(&self, id: i32) -> Result<(), String> {}
+    fn save(&mut self, user: User) -> Result<User, String> {}
+    fn delete(&mut self, id: i32) -> Result<(), String> {}
 }

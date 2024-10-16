@@ -8,12 +8,11 @@ use crate::{
     webserver::config::database::Database,
 };
 use actix_web::{post, web, HttpResponse, Responder};
-use diesel::migration::MigrationConnection;
 
 #[post("/sign_up")]
 pub async fn sign_up(payload: web::Json<CreateUserInputDto>) -> impl Responder {
-    let connection = Database::get_connection();
-    let user_repository = UserDieselRepository::new(connection, user::table);
+    let pool = Database::get_pool();
+    let user_repository = UserDieselRepository::new(pool.get().unwrap(), user::table);
     let create_user = CreateUser::new(Box::new(user_repository));
 
     create_user.execute(payload.0);

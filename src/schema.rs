@@ -1,9 +1,6 @@
-// @generated automatically by Diesel CLI.
-
 diesel::table! {
     user (id) {
-        #[max_length = 36]
-        id -> Varchar,
+        id -> Uuid,
         created_at -> Timestamp,
         updated_at -> Timestamp,
         #[max_length = 50]

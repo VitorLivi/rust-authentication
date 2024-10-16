@@ -1,12 +1,14 @@
 use std::time::SystemTime;
 
 use crate::schema::user;
-use diesel::{pg::Pg, prelude::Queryable, Selectable};
+use diesel::prelude::*;
+use diesel::{pg::Pg, Selectable};
+use uuid::Uuid;
 
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = user, check_for_backend(Pg))]
 pub struct UserModel {
-    pub id: String,
+    pub id: Uuid,
     pub created_at: SystemTime,
     pub updated_at: SystemTime,
     pub first_name: String,

@@ -12,7 +12,7 @@ use webserver::{config::database::Database, controllers::config_all_routes};
 async fn main() -> std::io::Result<()> {
     let secret_key = Key::generate();
 
-    Database::config();
+    Database::init_pool();
 
     println!("MASTER: {:?}", secret_key.master());
     println!("ENCRYPTION: {:?}", secret_key.encryption());

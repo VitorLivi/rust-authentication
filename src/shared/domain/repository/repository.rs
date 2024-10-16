@@ -1,6 +1,8 @@
+use uuid::Uuid;
+
 pub trait Repository<T> {
-    fn find_all(&self) -> Vec<T>;
-    fn find_by_id(&self, id: i32) -> Option<T>;
-    fn save(&self, entity: T) -> Result<T, String>;
-    fn delete(&self, id: i32) -> Result<(), String>;
+    fn find_all(&mut self) -> Vec<T>;
+    fn find_by_id(&mut self, id: Uuid) -> Option<T>;
+    fn save(&mut self, entity: T) -> Result<T, String>;
+    fn delete(&mut self, id: Uuid) -> Result<(), String>;
 }
