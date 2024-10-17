@@ -9,3 +9,5 @@ CREATE TABLE IF NOT EXISTS "user" (
     password_hash VARCHAR(255) NOT NULL,
     status INT DEFAULT 1
 );
+
+COMMENT ON COLUMN "user".status IS '1: active, 0: inactive';

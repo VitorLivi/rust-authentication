@@ -61,6 +61,25 @@ impl Repository<User> for UserDieselRepository {
         }
     }
 
-    fn save(&mut self, user: User) -> Result<User, String> {}
-    fn delete(&mut self, id: i32) -> Result<(), String> {}
+    fn save(&mut self, user: User) -> Result<User, String> {
+        let result = diesel::insert_into(self.user_schema)
+            .values(UserMapper::to_model(&user))
+            .get_result::<UserModel>(&mut self.connection);
+
+        match result {
+            Ok(user_model) => Ok(UserMapper::to_entity(&user_model)),
+            Err(_) => Err("Error saving user".to_string()),
+        }
+    }
+
+    fn delete(&mut self, id: Uuid) -> Result<(), String> {
+        let result = diesel::update(self.user_schema.filter(user::id.eq(id)))
+            .set(user::status.eq(0))
+            .execute(&mut self.connection);
+
+        match result {
+            Ok(_) => Ok(()),
+            Err(_) => Err("Error deleting user".to_string()),
+        }
+    }
 }

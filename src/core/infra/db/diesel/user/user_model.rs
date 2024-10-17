@@ -5,12 +5,12 @@ use diesel::prelude::*;
 use diesel::{pg::Pg, Selectable};
 use uuid::Uuid;
 
-#[derive(Queryable, Selectable)]
+#[derive(Queryable, Selectable, Insertable)]
 #[diesel(table_name = user, check_for_backend(Pg))]
 pub struct UserModel {
     pub id: Uuid,
-    pub created_at: SystemTime,
-    pub updated_at: SystemTime,
+    pub created_at: Option<SystemTime>,
+    pub updated_at: Option<SystemTime>,
     pub first_name: String,
     pub last_name: String,
     pub username: Option<String>,
