@@ -1,43 +1,55 @@
 use actix_session::Session;
-use uuid::Uuid;
+use serde::Deserialize;
 
 use crate::core::domain::entities::authenticator::Authenticator;
-use crate::core::domain::entities::user::{User, UserCredentials};
+use crate::core::domain::entities::user::UserCredentials;
+use crate::core::domain::repository::user_repository::UserRepository;
 use crate::shared::application::use_cases::use_case::UseCase;
 
-pub struct AuthenticateUserInputDto {
-    username: String,
-    password: String,
-    session: Session,
+#[derive(Deserialize)]
+pub struct AuthenticateUserUseCaseInputDto {
+    pub username: String,
+    pub password: String,
 }
 
-impl AuthenticateUserInputDto {
-    pub fn new(username: String, password: String, session: Session) -> AuthenticateUserInputDto {
-        AuthenticateUserInputDto {
-            username,
-            password,
+impl AuthenticateUserUseCaseInputDto {
+    pub fn new(username: String, password: String) -> AuthenticateUserUseCaseInputDto {
+        AuthenticateUserUseCaseInputDto { username, password }
+    }
+}
+
+pub struct AuthenticateUserUseCase {
+    session: Session,
+    user_repository: Box<dyn UserRepository + 'static>,
+}
+
+impl AuthenticateUserUseCase {
+    pub fn new(
+        session: Session,
+        user_repository: Box<dyn UserRepository + 'static>,
+    ) -> AuthenticateUserUseCase {
+        AuthenticateUserUseCase {
             session,
+            user_repository,
         }
     }
 }
 
-pub struct AuthenticateUser {}
+impl UseCase<AuthenticateUserUseCaseInputDto, ()> for AuthenticateUserUseCase {
+    fn execute(&self, input: AuthenticateUserUseCaseInputDto) -> () {
+        let mut authenticator = Authenticator::new(&self.session);
 
-impl AuthenticateUser {
-    pub fn new() -> AuthenticateUser {
-        AuthenticateUser {}
-    }
-}
+        let result = self
+            .user_repository
+            .find_by_username(input.username.clone());
 
-impl UseCase<AuthenticateUserInputDto, ()> for AuthenticateUser {
-    fn execute(&self, input: AuthenticateUserInputDto) -> () {
-        let mut authenticator = Authenticator::new(input.session);
-        let user_credentials = UserCredentials::new(input.username, input.password);
+        let user_credentials = &mut UserCredentials::new(input.username, input.password);
 
-        let test_id = Uuid::new_v4();
+        if (result.is_none()) {
+            panic!("User not found");
+        }
 
-        let mut user = User::new(Some(test_id), Some(user_credentials), "$argon2id$v=19$m=19456,t=2,p=1$IYfzwMcQ8cphz7Y8+WFtyg$Hc4MuXJdNYpEl/hunDxVUzSqbfgJXPu+0OdBijlAUI4".to_string());
-
-        user.authenticate(&mut authenticator);
+        let mut user = result.unwrap();
+        user.authenticate(&mut authenticator, user_credentials);
     }
 }

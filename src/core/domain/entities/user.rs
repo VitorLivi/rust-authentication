@@ -45,10 +45,18 @@ impl User {
         }
     }
 
-    pub fn authenticate(&mut self, authenticator: &mut Authenticator) {
+    pub fn get_id(&self) -> Option<Uuid> {
+        return self.id;
+    }
+
+    pub fn authenticate(
+        &mut self,
+        authenticator: &mut Authenticator,
+        user_credentials: &mut UserCredentials,
+    ) {
         print!("Authenticating user");
 
-        let is_authenticated = authenticator.authenticate(&self);
+        let is_authenticated = authenticator.authenticate(&self, user_credentials);
 
         if is_authenticated {
             self.is_authenticated = true;

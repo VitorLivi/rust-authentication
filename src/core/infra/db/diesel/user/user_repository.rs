@@ -30,7 +30,19 @@ impl UserDieselRepository {
     }
 }
 
-impl UserRepository for UserDieselRepository {}
+impl UserRepository for UserDieselRepository {
+    fn find_by_username(&self, username: String) -> Option<User> {
+        let user_result = self
+            .user_schema
+            .filter(user::username.eq(username))
+            .first::<UserModel>(&mut self.connection);
+
+        match user_result {
+            Ok(user_model) => Some(UserMapper::to_entity(&user_model)),
+            Err(_) => None,
+        }
+    }
+}
 
 impl Repository<User> for UserDieselRepository {
     fn find_all(&mut self) -> Vec<User> {

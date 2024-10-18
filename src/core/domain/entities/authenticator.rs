@@ -1,12 +1,10 @@
-use std::{borrow::Borrow, io::Error};
-
 use actix_session::Session;
 use argon2::{
     password_hash::{rand_core::OsRng, SaltString},
     Argon2, PasswordHash, PasswordHasher, PasswordVerifier,
 };
 
-use super::user::User;
+use super::user::{User, UserCredentials};
 
 pub struct Authenticator {
     session: Session,
@@ -17,8 +15,8 @@ impl Authenticator {
         Authenticator { session }
     }
 
-    pub fn authenticate(&mut self, user: &User) -> bool {
-        let is_password_correct = self.verify_password(user);
+    pub fn authenticate(&mut self, user: &User, user_credentials: &UserCredentials) -> bool {
+        let is_password_correct = self.verify_password(user, user_credentials);
 
         if !is_password_correct {
             self.session.clear();
@@ -38,7 +36,6 @@ impl Authenticator {
 
         match result {
             Ok(_) => (),
-            // print error
             Err(e) => {
                 println!("Error: {}", e);
                 return false;
@@ -48,17 +45,21 @@ impl Authenticator {
         return true;
     }
 
-    pub fn verify_password(&self, user: &User) -> bool {
+    pub fn verify_password(&self, user: &User, user_credentials: &UserCredentials) -> bool {
         let argon2 = Argon2::default();
 
-        let password_hash = PasswordHash::new(&user.password_hash).unwrap();
+        let user_properties = user.get_properties();
 
-        return argon2
-            .verify_password(
-                user.credentials.as_ref().unwrap().password.as_bytes(),
-                &password_hash,
-            )
-            .is_ok();
+        let password_hash_result = PasswordHash::new(user_properties.get("password_hash").unwrap());
+
+        match password_hash_result {
+            Ok(password_hash) => argon2
+                .verify_password(user_credentials.password.as_bytes(), &password_hash)
+                .is_ok(),
+            Err(_) => {
+                return false;
+            }
+        }
     }
 
     pub fn create_hash(password: &str) -> String {

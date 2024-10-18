@@ -1,5 +1,4 @@
-use actix_web::FromRequest;
-use futures::FutureExt;
+use actix_session::Session;
 use serde::Deserialize;
 
 use crate::core::domain::entities::authenticator::Authenticator;
@@ -8,32 +7,61 @@ use crate::core::domain::repository::user_repository::UserRepository;
 use crate::shared::application::use_cases::use_case::UseCase;
 
 #[derive(Deserialize)]
-pub struct CreateUserInputDto {
-    pub username: String,
-    pub password: String,
+pub struct CreateUserUseCaseInputDto {
+    username: String,
+    password: String,
+    first_name: String,
+    last_name: String,
+    email: String,
 }
 
-impl CreateUserInputDto {
-    pub fn new(username: String, password: String) -> CreateUserInputDto {
-        CreateUserInputDto { username, password }
+impl CreateUserUseCaseInputDto {
+    pub fn new(
+        username: String,
+        password: String,
+        first_name: String,
+        last_name: String,
+        email: String,
+    ) -> CreateUserUseCaseInputDto {
+        CreateUserUseCaseInputDto {
+            username,
+            password,
+            first_name,
+            last_name,
+            email,
+        }
     }
 }
 
-pub struct CreateUser {
+pub struct CreateUserUseCase {
+    session: Session,
     user_repository: Box<dyn UserRepository + 'static>,
 }
 
-impl CreateUser {
-    pub fn new(user_repository: Box<dyn UserRepository + 'static>) -> CreateUser {
-        CreateUser { user_repository }
+impl CreateUserUseCase {
+    pub fn new(
+        session: Session,
+        user_repository: Box<dyn UserRepository + 'static>,
+    ) -> CreateUserUseCase {
+        CreateUserUseCase {
+            session,
+            user_repository,
+        }
     }
 }
 
-impl UseCase<CreateUserInputDto, ()> for CreateUser {
-    fn execute(&self, input: CreateUserInputDto) -> () {
+impl UseCase<CreateUserUseCaseInputDto, ()> for CreateUserUseCase {
+    fn execute(&self, input: CreateUserUseCaseInputDto) -> () {
         let password_hash = Authenticator::create_hash(&input.password);
-        let user = User::new(None, None, password_hash);
+        let user = User::new(
+            None,
+            input.username,
+            input.first_name,
+            input.last_name,
+            input.email,
+            password_hash,
+        );
 
-        self.user_repository.save(user);
+        let result = self.user_repository.save(user);
     }
 }
