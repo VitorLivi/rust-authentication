@@ -45,7 +45,7 @@ impl UseCase<AuthenticateUserUseCaseInputDto, ()> for AuthenticateUserUseCase {
 
         let user_credentials = &mut UserCredentials::new(input.username, input.password);
 
-        if (result.is_none()) {
+        if result.is_none() {
             panic!("User not found");
         }
 
