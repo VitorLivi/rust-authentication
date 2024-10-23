@@ -1,0 +1,19 @@
+FROM rust:latest as builder
+
+WORKDIR /usr/app/
+COPY . .
+
+RUN cargo build --release
+
+FROM rust:latest
+
+WORKDIR /usr/app/
+
+COPY --from=builder /usr/app/target/release/ .
+
+RUN ls -la
+
+RUN chmod +x ./authentication
+RUN chcon -t textrel_shlib_t /usr/app/authentication
+
+CMD ["./authentication"]

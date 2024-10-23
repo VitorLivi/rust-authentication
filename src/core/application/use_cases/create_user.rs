@@ -50,8 +50,8 @@ impl CreateUserUseCase {
     }
 }
 
-impl UseCase<CreateUserUseCaseInputDto, ()> for CreateUserUseCase {
-    fn execute(&self, input: CreateUserUseCaseInputDto) -> () {
+impl UseCase<CreateUserUseCaseInputDto, User> for CreateUserUseCase {
+    fn execute(&mut self, input: CreateUserUseCaseInputDto) -> User {
         let password_hash = Authenticator::create_hash(&input.password);
         let user = User::new(
             None,
@@ -63,5 +63,11 @@ impl UseCase<CreateUserUseCaseInputDto, ()> for CreateUserUseCase {
         );
 
         let result = self.user_repository.save(user);
+
+        if result.is_err() {
+            panic!("Error saving user");
+        }
+
+        return result.unwrap();
     }
 }

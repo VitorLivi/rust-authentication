@@ -17,7 +17,8 @@ pub async fn authenticate(
 ) -> impl Responder {
     let pool = Database::get_pool();
     let user_repository = UserDieselRepository::new(pool.get().unwrap(), user::table);
-    let authenticate_user = AuthenticateUserUseCase::new(session, Box::new(user_repository));
+    let mut authenticate_user = AuthenticateUserUseCase::new(session, Box::new(user_repository));
+
     authenticate_user.execute(body.0);
 
     HttpResponse::Ok().body("OK")

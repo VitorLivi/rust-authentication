@@ -6,12 +6,12 @@ use argon2::{
 
 use super::user::{User, UserCredentials};
 
-pub struct Authenticator {
-    session: Session,
+pub struct Authenticator<'a> {
+    session: &'a Session,
 }
 
-impl Authenticator {
-    pub fn new(session: Session) -> Authenticator {
+impl<'a> Authenticator<'a> {
+    pub fn new(session: &'a Session) -> Authenticator {
         Authenticator { session }
     }
 

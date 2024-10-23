@@ -1,3 +1,5 @@
+use std::env;
+
 use actix_session::{storage::RedisSessionStore, SessionMiddleware};
 use actix_web::{cookie::Key, web, App, HttpResponse, HttpServer};
 
@@ -18,9 +20,11 @@ async fn main() -> std::io::Result<()> {
     println!("ENCRYPTION: {:?}", secret_key.encryption());
     println!("SIGNING: {:?}", secret_key.signing());
 
-    let redis_store = RedisSessionStore::new("redis://127.0.0.1:6379")
+    let redis_store = RedisSessionStore::new(env::var("REDIS_URL").expect("REDIS_URL must be set"))
         .await
         .unwrap();
+
+    print!("BATATA");
 
     HttpServer::new(move || {
         App::new()

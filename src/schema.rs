@@ -3,9 +3,9 @@
 diesel::table! {
     user (id) {
         #[max_length = 36]
-        id -> Varchar,
-        created_at -> Timestamp,
-        updated_at -> Timestamp,
+        id -> Uuid,
+        created_at -> Nullable<Timestamp>,
+        updated_at -> Nullable<Timestamp>,
         #[max_length = 50]
         first_name -> Varchar,
         #[max_length = 50]

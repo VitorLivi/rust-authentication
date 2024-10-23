@@ -31,7 +31,7 @@ impl UserDieselRepository {
 }
 
 impl UserRepository for UserDieselRepository {
-    fn find_by_username(&self, username: String) -> Option<User> {
+    fn find_by_username(&mut self, username: String) -> Option<User> {
         let user_result = self
             .user_schema
             .filter(user::username.eq(username))

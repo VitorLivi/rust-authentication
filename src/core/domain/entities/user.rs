@@ -54,8 +54,6 @@ impl User {
         authenticator: &mut Authenticator,
         user_credentials: &mut UserCredentials,
     ) {
-        print!("Authenticating user");
-
         let is_authenticated = authenticator.authenticate(&self, user_credentials);
 
         if is_authenticated {

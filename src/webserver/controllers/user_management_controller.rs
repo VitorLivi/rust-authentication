@@ -17,7 +17,7 @@ pub async fn sign_up(
 ) -> impl Responder {
     let pool = Database::get_pool();
     let user_repository = UserDieselRepository::new(pool.get().unwrap(), user::table);
-    let create_user = CreateUserUseCase::new(session, Box::new(user_repository));
+    let mut create_user = CreateUserUseCase::new(session, Box::new(user_repository));
 
     create_user.execute(payload.0);
     HttpResponse::Ok().body("OK")

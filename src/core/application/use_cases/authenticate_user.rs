@@ -29,14 +29,14 @@ impl AuthenticateUserUseCase {
         user_repository: Box<dyn UserRepository + 'static>,
     ) -> AuthenticateUserUseCase {
         AuthenticateUserUseCase {
-            session,
             user_repository,
+            session,
         }
     }
 }
 
 impl UseCase<AuthenticateUserUseCaseInputDto, ()> for AuthenticateUserUseCase {
-    fn execute(&self, input: AuthenticateUserUseCaseInputDto) -> () {
+    fn execute(&mut self, input: AuthenticateUserUseCaseInputDto) -> () {
         let mut authenticator = Authenticator::new(&self.session);
 
         let result = self
