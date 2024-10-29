@@ -2,7 +2,6 @@
 
 diesel::table! {
     user (id) {
-        #[max_length = 36]
         id -> Uuid,
         created_at -> Nullable<Timestamp>,
         updated_at -> Nullable<Timestamp>,

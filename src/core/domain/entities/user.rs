@@ -71,6 +71,7 @@ impl User {
         properties.insert("first_name".to_string(), self.first_name.to_string());
         properties.insert("last_name".to_string(), self.last_name.to_string());
         properties.insert("email".to_string(), self.email.to_string());
+        properties.insert("password_hash".to_string(), self.password_hash.to_string());
 
         return properties;
     }

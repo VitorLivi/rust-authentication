@@ -13,19 +13,18 @@ use webserver::{config::database::Database, controllers::config_all_routes};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let secret_key = Key::generate();
-
     Database::init_pool();
 
-    println!("MASTER: {:?}", secret_key.master());
-    println!("ENCRYPTION: {:?}", secret_key.encryption());
-    println!("SIGNING: {:?}", secret_key.signing());
-
-    let redis_store = RedisSessionStore::new(env::var("REDIS_URL").expect("REDIS_URL must be set"))
+    let redis_store = RedisSessionStore::new(env::var("REDIS_URL")
+        .expect("REDIS_URL must be set"))
         .await
         .unwrap();
 
-    print!("BATATA");
+    let secret_key = Key::from(
+        env::var("SECRET_KEY")
+            .expect("SECRET_KEY must be set")
+            .as_bytes(),
+    );
 
     HttpServer::new(move || {
         let cors = Cors::default()
@@ -47,7 +46,6 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .default_service(web::to(|| HttpResponse::Ok()))
     })
-    // config cors
     .bind(("0.0.0.0", 8080))?
     .run()
     .await

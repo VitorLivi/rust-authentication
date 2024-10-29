@@ -64,10 +64,6 @@ impl UseCase<CreateUserUseCaseInputDto, User> for CreateUserUseCase {
 
         let result = self.user_repository.save(user);
 
-        if result.is_err() {
-            panic!("Error saving user");
-        }
-
         return result.unwrap();
     }
 }

@@ -39,7 +39,10 @@ impl UserRepository for UserDieselRepository {
 
         match user_result {
             Ok(user_model) => Some(UserMapper::to_entity(&user_model)),
-            Err(_) => None,
+            Err(e) => {
+                println!("{:?}", e);
+                None
+            }
         }
     }
 }
@@ -78,10 +81,12 @@ impl Repository<User> for UserDieselRepository {
             .values(UserMapper::to_model(&user))
             .get_result::<UserModel>(&mut self.connection);
 
-        match result {
-            Ok(user_model) => Ok(UserMapper::to_entity(&user_model)),
-            Err(_) => Err("Error saving user".to_string()),
+        if result.is_err() {
+            println!("{:?}", result.err());
+            return Err("Error saving user".to_string());
         }
+
+        return Ok(UserMapper::to_entity(&result.unwrap()));
     }
 
     fn delete(&mut self, id: Uuid) -> Result<(), String> {
