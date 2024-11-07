@@ -24,10 +24,12 @@ services:
       retries: 3
     volumes:
       - ./config/redis.conf:/usr/local/etc/redis/redis.conf
-  authentication:
+    ports:
+      - "6380:6379"
+  authentication-backend:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: ./backend/Dockerfile.dev
     restart: always
     ports:
       - "8080:8080"
