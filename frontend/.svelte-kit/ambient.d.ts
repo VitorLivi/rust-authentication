@@ -43,6 +43,8 @@ declare module '$env/static/private' {
 	export const I3SOCK: string;
 	export const _P9K_TTY: string;
 	export const NODE: string;
+	export const npm_package_devDependencies_autoprefixer: string;
+	export const npm_package_devDependencies_tailwindcss: string;
 	export const npm_package_scripts_check_watch: string;
 	export const SSH_AUTH_SOCK: string;
 	export const P9K_TTY: string;
@@ -64,6 +66,7 @@ declare module '$env/static/private' {
 	export const LS_COLORS: string;
 	export const XDG_CURRENT_DESKTOP: string;
 	export const npm_package_version: string;
+	export const npm_package_scripts_prepare: string;
 	export const XDG_SEAT_PATH: string;
 	export const npm_config__konsig_v2_registry: string;
 	export const IMSETTINGS_MODULE: string;
@@ -116,7 +119,9 @@ declare module '$env/static/private' {
 	export const npm_config_registry: string;
 	export const ALACRITTY_WINDOW_ID: string;
 	export const ZED_TERM: string;
+	export const npm_package_devDependencies_postcss: string;
 	export const npm_node_execpath: string;
+	export const OLDPWD: string;
 	export const TERM_PROGRAM: string;
 	export const NODE_ENV: string;
 }
@@ -167,6 +172,8 @@ declare module '$env/dynamic/private' {
 		I3SOCK: string;
 		_P9K_TTY: string;
 		NODE: string;
+		npm_package_devDependencies_autoprefixer: string;
+		npm_package_devDependencies_tailwindcss: string;
 		npm_package_scripts_check_watch: string;
 		SSH_AUTH_SOCK: string;
 		P9K_TTY: string;
@@ -188,6 +195,7 @@ declare module '$env/dynamic/private' {
 		LS_COLORS: string;
 		XDG_CURRENT_DESKTOP: string;
 		npm_package_version: string;
+		npm_package_scripts_prepare: string;
 		XDG_SEAT_PATH: string;
 		npm_config__konsig_v2_registry: string;
 		IMSETTINGS_MODULE: string;
@@ -240,7 +248,9 @@ declare module '$env/dynamic/private' {
 		npm_config_registry: string;
 		ALACRITTY_WINDOW_ID: string;
 		ZED_TERM: string;
+		npm_package_devDependencies_postcss: string;
 		npm_node_execpath: string;
+		OLDPWD: string;
 		TERM_PROGRAM: string;
 		NODE_ENV: string;
 		[key: `PUBLIC_${string}`]: undefined;
