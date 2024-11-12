@@ -52,6 +52,7 @@ declare module '$env/static/private' {
 	export const DESKTOP_SESSION: string;
 	export const SSH_AGENT_PID: string;
 	export const XDG_SEAT: string;
+	export const npm_package_dependencies_axios: string;
 	export const PWD: string;
 	export const npm_package_devDependencies_vite: string;
 	export const LOGNAME: string;
@@ -136,7 +137,7 @@ declare module '$env/static/private' {
  * ```
  */
 declare module '$env/static/public' {
-	
+	export const PUBLIC_API_URL: string;
 }
 
 /**
@@ -181,6 +182,7 @@ declare module '$env/dynamic/private' {
 		DESKTOP_SESSION: string;
 		SSH_AGENT_PID: string;
 		XDG_SEAT: string;
+		npm_package_dependencies_axios: string;
 		PWD: string;
 		npm_package_devDependencies_vite: string;
 		LOGNAME: string;
@@ -272,6 +274,7 @@ declare module '$env/dynamic/private' {
  */
 declare module '$env/dynamic/public' {
 	export const env: {
+		PUBLIC_API_URL: string;
 		[key: `PUBLIC_${string}`]: string | undefined;
 	}
 }
