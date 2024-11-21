@@ -1,12 +1,12 @@
 import { http } from "../../http";
-import type { RegisterInput } from "./types";
+import type { SignUpInput } from "./types";
 
 export class AuthService {
   public async login() {}
 
   public async logout() { }
 
-  public async register(input: RegisterInput) {
-    http.post('/register', input);
+  public async signUp(input: SignUpInput) {
+    http.post('/sign-up', input);
   }
 }

@@ -1,28 +1,30 @@
 <script lang="ts">
     import { AuthService } from "$lib/api/services/auth/auth";
 
-    type RegisterFormData = {
+    type SignUpFormData = {
+        username: string;
         email: string;
         password: string;
-        username: string;
         first_name: string;
         last_name: string;
     };
 
-    function getFormData(form: HTMLFormElement): RegisterFormData | null {
+    function getFormData(form: HTMLFormElement): SignUpFormData | null {
         const formData = new FormData(form);
         let data: { [key: string]: string } = {};
 
         const requiredFields = [
+            "username",
             "email",
             "password",
-            "username",
-            "first-name",
-            "last-name",
+            "first_name",
+            "last_name",
         ];
 
         for (const [key, value] of formData.entries()) {
-            data[key as keyof RegisterFormData] = value as string;
+            console.log(key, value);
+
+            data[key as keyof SignUpFormData] = value as string;
         }
 
         for (const field of requiredFields) {
@@ -31,11 +33,12 @@
             }
         }
 
-        return data as RegisterFormData;
+        return data as SignUpFormData;
     }
 
     function submitForm(event: SubmitEvent): void {
         event.preventDefault();
+        event.stopPropagation();
 
         if (!(event.target instanceof HTMLFormElement)) {
             return;
@@ -49,8 +52,8 @@
         }
 
         const authService = new AuthService();
-        authService.register(data).then(() => {
-            window.location.href = "/login";
+        authService.signUp(data).then(() => {
+            window.location.href = "/sign-in";
         });
     }
 </script>
@@ -128,15 +131,15 @@
             <div>
                 <div class="flex items-center justify-between">
                     <label
-                        for="first-name"
+                        for="first_name"
                         class="block text-sm/6 font-medium text-gray-900"
                         >First Name</label
                     >
                 </div>
                 <div class="mt-2">
                     <input
-                        id="first-name"
-                        name="first-name"
+                        id="first_name"
+                        name="first_name"
                         type="text"
                         required
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
@@ -146,15 +149,15 @@
             <div>
                 <div class="flex items-center justify-between">
                     <label
-                        for="last-name"
+                        for="last_name"
                         class="block text-sm/6 font-medium text-gray-900"
                         >Last Name</label
                     >
                 </div>
                 <div class="mt-2">
                     <input
-                        id="last-name"
-                        name="last-name"
+                        id="last_name"
+                        name="last_name"
                         type="text"
                         required
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"

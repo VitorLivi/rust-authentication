@@ -1,0 +1,11 @@
+FROM node:23-alpine
+
+WORKDIR /app
+
+RUN npm i -g pnpm
+
+COPY ./frontend .
+
+RUN pnpm install
+
+CMD ["pnpm", "run", "dev"]

@@ -32,14 +32,31 @@ services:
       dockerfile: ./backend/Dockerfile.dev
     restart: always
     ports:
-      - "8080:8080"
+      - "5000:5000"
     depends_on:
       - db
       - redis
     env_file:
-      - .env
+      - ./backend/.env
     volumes:
-      - .:/usr/app:z
+      - ./backend:/usr/app:z
+  authentication-frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile.dev
+    restart: always
+    extra_hosts:
+      host.docker.internal: host-gateway
+    ports:
+      - "5173:5173"
+    depends_on:
+      - db
+      - redis
+      - authentication-backend
+    env_file:
+      - ./frontend/.env
+    volumes:
+      - ./frontend:/app:z
 
 volumes:
   pgdata:

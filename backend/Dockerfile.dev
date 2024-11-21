@@ -1,9 +1,9 @@
 FROM rust:latest
 
-WORKDIR /usr/app/
+WORKDIR /usr/app
 
 RUN cargo install cargo-watch
 
-COPY . .
+COPY ./backend .
 
 CMD ["cargo", "watch", "-x", "run"]

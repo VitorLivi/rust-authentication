@@ -10,7 +10,7 @@ use crate::{
 use actix_session::Session;
 use actix_web::{post, web, HttpResponse, Responder};
 
-#[post("/sign_up")]
+#[post("/sign-up")]
 pub async fn sign_up(
     session: Session,
     payload: web::Json<CreateUserUseCaseInputDto>,

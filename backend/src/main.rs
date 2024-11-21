@@ -15,8 +15,7 @@ use webserver::{config::database::Database, controllers::config_all_routes};
 async fn main() -> std::io::Result<()> {
     Database::init_pool();
 
-    let redis_store = RedisSessionStore::new(env::var("REDIS_URL")
-        .expect("REDIS_URL must be set"))
+    let redis_store = RedisSessionStore::new(env::var("REDIS_URL").expect("REDIS_URL must be set"))
         .await
         .unwrap();
 
@@ -28,7 +27,7 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         let cors = Cors::default()
-            .allowed_origin("http://localhost:8080")
+            .allowed_origin("http://localhost:5173")
             .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
             .allowed_headers(vec![
                 http::header::AUTHORIZATION,
@@ -46,7 +45,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .default_service(web::to(|| HttpResponse::Ok()))
     })
-    .bind(("0.0.0.0", 8080))?
+    .bind(("0.0.0.0", 5000))?
     .run()
     .await
 }

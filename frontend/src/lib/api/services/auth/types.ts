@@ -1,4 +1,4 @@
-export type RegisterInput = {
+export type SignUpInput = {
  	username: string,
   password: string,
   first_name: string,
