@@ -1,6 +1,9 @@
 {
 	"/": [],
 	"/admin-panel": [],
+	"/admin-panel/[menu]": [
+		"src/routes/admin-panel/[menu]/+page.ts"
+	],
 	"/sign-in": [],
 	"/sign-up": []
 }
