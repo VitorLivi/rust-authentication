@@ -1,8 +1,0 @@
-#admin-panel-global {
-    display: flex;
-    flex-direction: row;
-    height: calc(100% - 64px);
-}
-
-#admin-panel-content {
-}

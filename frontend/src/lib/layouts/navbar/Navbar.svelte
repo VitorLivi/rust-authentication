@@ -1,4 +1,4 @@
-<header class="bg-white">
+<header class="bg-white shadow-sm">
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
             <div class="flex-1 md:flex md:items-center md:gap-12">
@@ -34,7 +34,7 @@
                     </button>
 
                     <div
-                        class="absolute end-0 z-10 mt-0.5 w-56 divide-y divide-gray-100 rounded-md border border-gray-100 bg-white shadow-lg"
+                        class="absolute end-0 z-10 mt-0.5 w-56 divide-y divide-gray-100 rounded-md border border-gray-100 bg-white shadow-lg hidden"
                         role="menu"
                     >
                         <div class="p-2">

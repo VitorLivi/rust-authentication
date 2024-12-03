@@ -1,6 +1,6 @@
 {
 	"/": [],
-	"/admin-panel": [],
+	"/admin-panel/[...catchall]": [],
 	"/sign-in": [],
 	"/sign-up": []
 }

@@ -11,7 +11,7 @@ export const nodes = [
 export const server_loads = [];
 
 export const dictionary = {
-		"/admin-panel": [2],
+		"/admin-panel/[...catchall]": [2],
 		"/sign-in": [3],
 		"/sign-up": [4]
 	};

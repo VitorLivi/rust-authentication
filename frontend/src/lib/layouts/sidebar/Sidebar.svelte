@@ -2,47 +2,57 @@
     import { Link } from "svelte-routing";
 </script>
 
-<div class="flex h-full flex-col justify-between border-e bg-white">
+<div class="flex h-full flex-col justify-between shadow-md bg-white">
     <div class="px-4 py-6">
         <ul class="mt-6 space-y-1">
             <li>
-                <div
-                    class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                >
-                    <Link to="/admin-panel/general">General</Link>
-                </div>
+                <Link to="/admin-panel/general">
+                    <div
+                        class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    >
+                        General
+                    </div>
+                </Link>
             </li>
 
             <li>
-                <div
-                    class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                >
-                    <Link to="/admin-panel/groups">Groups</Link>
-                </div>
+                <Link to="/admin-panel/groups">
+                    <div
+                        class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    >
+                        Groups
+                    </div>
+                </Link>
             </li>
 
             <li>
-                <div
-                    class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                >
-                    <Link to="/admin-panel/permissions">Permissions</Link>
-                </div>
+                <Link to="/admin-panel/permissions">
+                    <div
+                        class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    >
+                        Permissions
+                    </div>
+                </Link>
             </li>
 
             <li>
-                <div
-                    class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                >
-                    <Link to="/admin-panel/users">Users</Link>
-                </div>
+                <Link to="/admin-panel/users">
+                    <div
+                        class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    >
+                        Users
+                    </div>
+                </Link>
             </li>
 
             <li>
-                <div
-                    class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                >
-                    <Link to="/admin-panel/sessions">Sessions</Link>
-                </div>
+                <Link to="/admin-panel/sessions">
+                    <div
+                        class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    >
+                        Sessions
+                    </div>
+                </Link>
             </li>
         </ul>
     </div>
