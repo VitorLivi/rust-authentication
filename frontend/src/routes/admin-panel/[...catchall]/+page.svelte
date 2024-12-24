@@ -9,6 +9,7 @@
     import { Route, Router } from "svelte-routing";
     import "./style.css";
     import Breadcrumb from "$lib/components/breadcrumb/Breadcrumb.svelte";
+    import { adminPanelBreadcrumbs } from "$lib/data/breadcrumb/admin-panel";
 </script>
 
 <div class="flex flex-col h-full">
@@ -18,19 +19,14 @@
             <Sidebar />
 
             <div id="admin-panel-content-wrapper">
-                <Breadcrumb
-                    breadcrumbs={[
-                        { name: "Admin Panel", path: "/admin-panel" },
-                        { name: "Groups", path: "/admin-panel/groups" },
-                    ]}
-                />
+                <Breadcrumb breadcrumbs={adminPanelBreadcrumbs} />
 
                 <div
                     id="admin-panel-content"
                     class="rounded-lg shadow-lg flex-grow"
                 >
                     <Route path="/admin-panel/general" component={General} />
-                    <Route path="/admin-panel/groups" component={Groups} />
+                    <Route path="/admin-panel/groups/*" component={Groups} />
                     <Route
                         path="/admin-panel/permissions"
                         component={Permissions}

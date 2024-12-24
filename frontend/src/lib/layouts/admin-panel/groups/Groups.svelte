@@ -1,54 +1,75 @@
 <script lang="ts">
     import Button from "$lib/components/button/Button.svelte";
-    import Table from "$lib/components/table/Table.svelte";
-    import { page } from "$app/stores";
-    import { Link } from "svelte-routing";
+    import { Link, useLocation } from "svelte-routing";
+    import AddGroup from "./AddGroup.svelte";
+    import { writable } from "svelte/store";
+    import {
+        SvelteFlow,
+        Controls,
+        Background,
+        BackgroundVariant,
+        MiniMap,
+    } from "@xyflow/svelte";
+
+    import "@xyflow/svelte/dist/style.css";
+
+    const nodes = writable([
+        {
+            id: "1",
+            type: "default",
+            data: { label: "Input Node" },
+            position: { x: 0, y: 0 },
+        },
+        {
+            id: "2",
+            type: "default",
+            data: { label: "Node" },
+            position: { x: 0, y: 150 },
+        },
+    ]);
+
+    const edges = writable([
+        {
+            id: "1-2",
+            type: "default",
+            source: "1",
+            target: "2",
+            label: "Edge Text",
+        },
+    ]);
+
+    const snapGrid = [25, 25];
+
+    let location = useLocation();
 </script>
 
 <div class="bg-white p-2 lg:col-span-3">
-    <div class="flex flex-row justify-start mb-4 mt-8">
-        <Link to="/admin-panel/groups/add-group">
-            <Button text="Add Group" />
-        </Link>
-    </div>
-
-    <!-- <Route path="/admin-panel/groups/add-group" component={AddGroup} /> -->
-
-    {#if $page.url.pathname === "/admin-panel/groups"}
-        <Table />
+    {#if $location.pathname !== "/admin-panel/groups/add-group"}
+        <div class="flex flex-row justify-start mb-4 mt-8">
+            <Link to="/admin-panel/groups/add-group">
+                <Button text="Add Group" />
+            </Link>
+        </div>
+    {/if}
+    {#if $location.pathname === "/admin-panel/groups"}
+        <div style:height="500px">
+            <SvelteFlow
+                {nodes}
+                {edges}
+                {snapGrid}
+                nodesConnectable={false}
+                fitView
+                on:nodeclick={(event) =>
+                    console.log("on node click", event.detail.node)}
+            >
+                <Controls />
+                <Background variant={BackgroundVariant.Dots} />
+                <MiniMap />
+            </SvelteFlow>
+        </div>
     {/if}
 
-    <!-- <form action="#" class="space-y-4">
-        <div>
-            <label class="sr-only" for="name">Name</label>
-            <input
-                class="w-full rounded-lg border-gray-200 p-3 text-sm"
-                placeholder="Name"
-                type="text"
-                id="name"
-            />
-        </div>
-
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-                <label class="sr-only" for="email">Email</label>
-                <input
-                    class="w-full rounded-lg border-gray-200 p-3 text-sm"
-                    placeholder="Email address"
-                    type="email"
-                    id="email"
-                />
-            </div>
-
-            <div>
-                <label class="sr-only" for="phone">Phone</label>
-                <input
-                    class="w-full rounded-lg border-gray-200 p-3 text-sm"
-                    placeholder="Phone Number"
-                    type="tel"
-                    id="phone"
-                />
-            </div>
-        </div>
-    </form> -->
+    {#if $location.pathname === "/admin-panel/groups/add-group"}
+        <AddGroup />
+    {/if}
 </div>

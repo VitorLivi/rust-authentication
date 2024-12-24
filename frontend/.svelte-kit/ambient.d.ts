@@ -58,6 +58,7 @@ declare module '$env/static/private' {
 	export const npm_lifecycle_script: string;
 	export const npm_package_devDependencies__sveltejs_kit: string;
 	export const npm_package_version: string;
+	export const npm_package_dependencies__xyflow_svelte: string;
 	export const npm_package_dependencies_svelte_routing: string;
 	export const npm_lifecycle_event: string;
 	export const NODE_PATH: string;
@@ -137,6 +138,7 @@ declare module '$env/dynamic/private' {
 		npm_lifecycle_script: string;
 		npm_package_devDependencies__sveltejs_kit: string;
 		npm_package_version: string;
+		npm_package_dependencies__xyflow_svelte: string;
 		npm_package_dependencies_svelte_routing: string;
 		npm_lifecycle_event: string;
 		NODE_PATH: string;
