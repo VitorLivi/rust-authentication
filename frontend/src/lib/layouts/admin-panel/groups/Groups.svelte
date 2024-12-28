@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Button from "$lib/components/button/Button.svelte";
+    import { Button } from "flowbite-svelte";
     import { Link, useLocation } from "svelte-routing";
     import AddGroup from "./AddGroup.svelte";
     import { writable } from "svelte/store";
@@ -12,6 +12,7 @@
     } from "@xyflow/svelte";
 
     import "@xyflow/svelte/dist/style.css";
+    import { isRoute } from "$lib/utils/routing";
 
     const nodes = writable([
         {
@@ -45,13 +46,13 @@
 
 <div class="bg-white p-2 lg:col-span-3">
     {#if $location.pathname !== "/admin-panel/groups/add-group"}
-        <div class="flex flex-row justify-start mb-4 mt-8">
+        <div class="flex flex-row justify-start mb-4 mt-4">
             <Link to="/admin-panel/groups/add-group">
-                <Button text="Add Group" />
+                <Button outline>Add Group</Button>
             </Link>
         </div>
     {/if}
-    {#if $location.pathname === "/admin-panel/groups"}
+    {#if isRoute("/admin-panel/groups", $location)}
         <div style:height="500px">
             <SvelteFlow
                 {nodes}
@@ -69,7 +70,7 @@
         </div>
     {/if}
 
-    {#if $location.pathname === "/admin-panel/groups/add-group"}
+    {#if isRoute("/admin-panel/groups/add-group", $location)}
         <AddGroup />
     {/if}
 </div>

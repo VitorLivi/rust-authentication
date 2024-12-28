@@ -36,6 +36,7 @@ declare module '$env/static/private' {
 	export const SHLVL: string;
 	export const HOME: string;
 	export const npm_package_devDependencies_eslint_plugin_svelte: string;
+	export const npm_package_devDependencies_flowbite_svelte: string;
 	export const npm_package_devDependencies_svelte_check: string;
 	export const npm_package_scripts_check: string;
 	export const npm_package_devDependencies_tailwindcss: string;
@@ -47,6 +48,7 @@ declare module '$env/static/private' {
 	export const npm_package_scripts_prepare: string;
 	export const npm_package_scripts_lint: string;
 	export const npm_config_registry: string;
+	export const npm_package_devDependencies_flowbite_svelte_icons: string;
 	export const npm_package_dependencies_axios: string;
 	export const npm_config_node_gyp: string;
 	export const PATH: string;
@@ -67,6 +69,7 @@ declare module '$env/static/private' {
 	export const npm_package_devDependencies_globals: string;
 	export const PWD: string;
 	export const npm_execpath: string;
+	export const npm_package_devDependencies_flowbite: string;
 	export const npm_package_devDependencies__sveltejs_adapter_auto: string;
 	export const npm_package_devDependencies_postcss: string;
 	export const npm_command: string;
@@ -116,6 +119,7 @@ declare module '$env/dynamic/private' {
 		SHLVL: string;
 		HOME: string;
 		npm_package_devDependencies_eslint_plugin_svelte: string;
+		npm_package_devDependencies_flowbite_svelte: string;
 		npm_package_devDependencies_svelte_check: string;
 		npm_package_scripts_check: string;
 		npm_package_devDependencies_tailwindcss: string;
@@ -127,6 +131,7 @@ declare module '$env/dynamic/private' {
 		npm_package_scripts_prepare: string;
 		npm_package_scripts_lint: string;
 		npm_config_registry: string;
+		npm_package_devDependencies_flowbite_svelte_icons: string;
 		npm_package_dependencies_axios: string;
 		npm_config_node_gyp: string;
 		PATH: string;
@@ -147,6 +152,7 @@ declare module '$env/dynamic/private' {
 		npm_package_devDependencies_globals: string;
 		PWD: string;
 		npm_execpath: string;
+		npm_package_devDependencies_flowbite: string;
 		npm_package_devDependencies__sveltejs_adapter_auto: string;
 		npm_package_devDependencies_postcss: string;
 		npm_command: string;

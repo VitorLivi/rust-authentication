@@ -1,7 +1,7 @@
 {
+  "type": "module",
   "name": "my-app",
   "version": "0.0.1",
-  "type": "module",
   "scripts": {
     "dev": "vite dev --host",
     "build": "vite build",
@@ -19,6 +19,9 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^9.7.0",
     "eslint-plugin-svelte": "^2.36.0",
+    "flowbite": "^2.5.2",
+    "flowbite-svelte": "^0.47.4",
+    "flowbite-svelte-icons": "^2.0.2",
     "globals": "^15.0.0",
     "postcss": "^8.4.47",
     "svelte": "^5.0.0",

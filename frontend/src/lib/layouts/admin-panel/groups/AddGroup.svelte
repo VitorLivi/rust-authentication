@@ -1,13 +1,16 @@
 <script lang="ts">
-    import InputText from "$lib/components/input-text/InputText.svelte";
     import TransferList from "$lib/components/list/TransferList.svelte";
-    import type { SelectOption } from "$lib/components/select/Select.svelte";
-    import Select from "$lib/components/select/Select.svelte";
+    import {
+        Button,
+        Input,
+        Select,
+        type SelectOptionType,
+    } from "flowbite-svelte";
 
-    const groupOptions: SelectOption[] = [
-        { value: "1", label: "Group 1" },
-        { value: "2", label: "Group 2" },
-        { value: "3", label: "Group 3" },
+    const groupOptions: SelectOptionType<any>[] = [
+        { value: "1", name: "Group 1" },
+        { value: "2", name: "Group 2" },
+        { value: "3", name: "Group 3" },
     ];
 
     const leftItems = [
@@ -17,15 +20,20 @@
     ];
 
     const rightItems = [{ id: "4", label: "Member 4" }];
+
+    const handleSubmit = (e: SubmitEvent) => {
+        e.preventDefault();
+        console.log("submit");
+    };
 </script>
 
-<form action="#" class="space-y-4 flex flex-col gap-4">
+<form onsubmit={handleSubmit} class="space-y-4 flex flex-col gap-4">
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-            <InputText label="Name" />
+            <Input type="text" placeholder="Name" />
         </div>
 
-        <Select id="parent-groups" label="Parent" options={groupOptions} />
+        <Select id="parent-groups" placeholder="Parent" items={groupOptions} />
     </div>
 
     <TransferList
@@ -34,4 +42,10 @@
         {leftItems}
         {rightItems}
     />
+
+    <div class="flex w-full justify-start">
+        <Button class="w-[150px]" type="submit" outline
+            >Save</Button
+        >
+    </div>
 </form>
