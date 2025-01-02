@@ -7,7 +7,9 @@ CREATE TABLE IF NOT EXISTS "user" (
     username VARCHAR(50),
     email VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
+    ask_reset_password INT DEFAULT 0,
     status INT DEFAULT 1
 );
 
 COMMENT ON COLUMN "user".status IS '1: active, 0: inactive';
+COMMENT ON COLUMN "user".ask_reset_password IS '1: need reset password, 0: not need reset password';

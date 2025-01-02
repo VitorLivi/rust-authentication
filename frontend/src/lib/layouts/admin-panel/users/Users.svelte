@@ -27,12 +27,8 @@
   }
 </script>
 
+<div class="container mt-4">
 {#if isRoute("/admin-panel/users", $location)}
-  <div class="flex flex-row justify-start mb-4 mt-4">
-    <Link to="/admin-panel/users/add-user">
-      <Button outline>Add User</Button>
-    </Link>
-  </div>
 
   <Table
     {items}
@@ -68,8 +64,14 @@
       </TableBodyRow>
     </TableBody>
   </Table>
+  <div class="flex flex-row justify-start mb-4 mt-4">
+    <Link to="/admin-panel/users/add-user">
+      <Button outline>Add User</Button>
+    </Link>
+  </div>
 {/if}
 
 {#if isRoute("/admin-panel/users/add-user", $location)}
   <AddUser />
 {/if}
+</div>

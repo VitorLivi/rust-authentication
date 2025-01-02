@@ -23,6 +23,10 @@
       label: "Sessions",
       link: "/admin-panel/sessions",
     },
+    {
+      label: "Audit",
+      link: "/admin-panel/audit",
+    },
   ];
 </script>
 

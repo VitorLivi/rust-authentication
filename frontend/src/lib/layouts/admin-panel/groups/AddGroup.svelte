@@ -27,7 +27,7 @@
     };
 </script>
 
-<form onsubmit={handleSubmit} class="space-y-4 flex flex-col gap-4">
+<form onsubmit={handleSubmit} class="space-y-4 flex flex-col gap-4 container mt-4">
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
             <Input type="text" placeholder="Name" />

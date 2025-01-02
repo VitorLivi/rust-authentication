@@ -16,5 +16,6 @@ diesel::table! {
         #[max_length = 255]
         password_hash -> Varchar,
         status -> Nullable<Int4>,
+        ask_reset_password -> Int4,
     }
 }

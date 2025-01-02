@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Link, useLocation } from "svelte-routing";
+  import { useLocation } from "svelte-routing";
   import { isRoute } from "$lib/utils/routing";
   import {
     Table,
@@ -24,31 +24,33 @@
   }
 </script>
 
-{#if isRoute("/admin-panel/sessions", $location)}
-  <Table
-    {items}
-    placeholder="Search by sessions"
-    hoverable={true}
-    filter={(item, searchTerm) =>
-      item.maker.toLowerCase().includes(searchTerm.toLowerCase())}
-  >
-    <TableHead>
-      <TableHeadCell>ID</TableHeadCell>
-      <TableHeadCell>Name</TableHeadCell>
-      <TableHeadCell>Logged At</TableHeadCell>
-      <TableHeadCell>Expires At</TableHeadCell>
-      <TableHeadCell>Action</TableHeadCell>
-    </TableHead>
-    <TableBody tableBodyClass="divide-y">
-      <TableBodyRow slot="row" let:item>
-        <TableBodyCell>{item.id}</TableBodyCell>
-        <TableBodyCell>{item.maker}</TableBodyCell>
-        <TableBodyCell>{item.type}</TableBodyCell>
-        <TableBodyCell>{item.type}</TableBodyCell>
-        <TableBodyCell>
-          <TableDeleteIcon />
-        </TableBodyCell>
-      </TableBodyRow>
-    </TableBody>
-  </Table>
-{/if}
+<div class="container mt-4">
+  {#if isRoute("/admin-panel/sessions", $location)}
+    <Table
+      {items}
+      placeholder="Search by sessions"
+      hoverable={true}
+      filter={(item, searchTerm) =>
+        item.maker.toLowerCase().includes(searchTerm.toLowerCase())}
+    >
+      <TableHead>
+        <TableHeadCell>ID</TableHeadCell>
+        <TableHeadCell>Name</TableHeadCell>
+        <TableHeadCell>Logged At</TableHeadCell>
+        <TableHeadCell>Expires At</TableHeadCell>
+        <TableHeadCell>Action</TableHeadCell>
+      </TableHead>
+      <TableBody tableBodyClass="divide-y">
+        <TableBodyRow slot="row" let:item>
+          <TableBodyCell>{item.id}</TableBodyCell>
+          <TableBodyCell>{item.maker}</TableBodyCell>
+          <TableBodyCell>{item.type}</TableBodyCell>
+          <TableBodyCell>{item.type}</TableBodyCell>
+          <TableBodyCell>
+            <TableDeleteIcon />
+          </TableBodyCell>
+        </TableBodyRow>
+      </TableBody>
+    </Table>
+  {/if}
+</div>

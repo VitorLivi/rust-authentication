@@ -1,5 +1,5 @@
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-
 use uuid::Uuid;
 
 use crate::core::domain::entities::authenticator::Authenticator;
@@ -15,6 +15,7 @@ impl UserCredentials {
     }
 }
 
+#[derive(Serialize)]
 pub struct User {
     id: Option<Uuid>,
     username: String,
@@ -23,6 +24,7 @@ pub struct User {
     email: String,
     password_hash: String,
     is_authenticated: bool,
+    ask_reset_password: bool,
 }
 
 impl User {
@@ -33,6 +35,7 @@ impl User {
         last_name: String,
         email: String,
         password_hash: String,
+        ask_reset_password: bool,
     ) -> User {
         User {
             id: id.or(Some(Uuid::new_v4())),
@@ -42,6 +45,7 @@ impl User {
             email,
             password_hash,
             is_authenticated: false,
+            ask_reset_password,
         }
     }
 
@@ -72,6 +76,14 @@ impl User {
         properties.insert("last_name".to_string(), self.last_name.to_string());
         properties.insert("email".to_string(), self.email.to_string());
         properties.insert("password_hash".to_string(), self.password_hash.to_string());
+        properties.insert(
+            "is_authenticated".to_string(),
+            self.is_authenticated.to_string(),
+        );
+        properties.insert(
+            "ask_reset_password".to_string(),
+            self.ask_reset_password.to_string(),
+        );
 
         return properties;
     }

@@ -12,6 +12,7 @@ impl UserMapper {
             user_model.last_name.clone(),
             user_model.email.clone(),
             user_model.password_hash.clone(),
+            user_model.ask_reset_password == 1
         )
     }
 
@@ -28,6 +29,11 @@ impl UserMapper {
             username: Some(user_props.get("username").unwrap().to_string()),
             password_hash: user_props.get("password_hash").unwrap().to_string(),
             status: None,
+            ask_reset_password: user_props
+                .get("ask_reset_password")
+                .unwrap()
+                .parse()
+                .unwrap(),
         }
     }
 }

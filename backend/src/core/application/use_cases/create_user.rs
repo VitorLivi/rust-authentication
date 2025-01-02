@@ -13,6 +13,7 @@ pub struct CreateUserUseCaseInputDto {
     first_name: String,
     last_name: String,
     email: String,
+    ask_reset_password: bool,
 }
 
 impl CreateUserUseCaseInputDto {
@@ -22,6 +23,7 @@ impl CreateUserUseCaseInputDto {
         first_name: String,
         last_name: String,
         email: String,
+        ask_reset_password: bool,
     ) -> CreateUserUseCaseInputDto {
         CreateUserUseCaseInputDto {
             username,
@@ -29,6 +31,7 @@ impl CreateUserUseCaseInputDto {
             first_name,
             last_name,
             email,
+            ask_reset_password,
         }
     }
 }
@@ -60,6 +63,7 @@ impl UseCase<CreateUserUseCaseInputDto, User> for CreateUserUseCase {
             input.last_name,
             input.email,
             password_hash,
+            input.ask_reset_password,
         );
 
         let result = self.user_repository.save(user);

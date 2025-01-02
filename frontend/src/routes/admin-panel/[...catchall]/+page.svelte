@@ -10,6 +10,7 @@
   import Breadcrumb from "$lib/components/breadcrumb/Breadcrumb.svelte";
   import { adminPanelBreadcrumbs } from "$lib/data/breadcrumb/admin-panel";
   import General from "$lib/layouts/admin-panel/general/General.svelte";
+    import Audit from "$lib/layouts/admin-panel/audit/Audit.svelte";
 </script>
 
 <div class="flex flex-col h-full">
@@ -27,6 +28,7 @@
           <Route path="/admin-panel/permissions/*" component={Permissions} />
           <Route path="/admin-panel/users/*" component={Users} />
           <Route path="/admin-panel/sessions/*" component={Sessions} />
+          <Route path="/admin-panel/audit/*" component={Audit} />
           <Route path="/admin-panel" component={General} />
         </div>
       </div>

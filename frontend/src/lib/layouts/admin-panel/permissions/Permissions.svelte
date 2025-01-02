@@ -25,13 +25,8 @@
   }
 </script>
 
+<div class="container mt-4">
 {#if isRoute("/admin-panel/permissions", $location)}
-  <div class="flex flex-row justify-start mb-4 mt-4">
-    <Link to="/admin-panel/permissions/add-permission">
-      <Button outline>Add Permission</Button>
-    </Link>
-  </div>
-
   <Table
     {items}
     placeholder="Search by permission"
@@ -52,8 +47,14 @@
       </TableBodyRow>
     </TableBody>
   </Table>
+  <div class="flex flex-row justify-start mb-4 mt-4">
+    <Link to="/admin-panel/permissions/add-permission">
+      <Button outline>Add Permission</Button>
+    </Link>
+  </div>
 {/if}
 
 {#if isRoute("/admin-panel/permissions/add-permission", $location)}
   <AddPermission />
 {/if}
+</div>
