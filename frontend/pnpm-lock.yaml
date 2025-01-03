@@ -14,6 +14,9 @@ importers:
       axios:
         specifier: ^1.7.7
         version: 1.7.7
+      svelte-french-toast:
+        specifier: ^1.2.0
+        version: 1.2.0(svelte@5.1.12)
       svelte-routing:
         specifier: ^2.13.0
         version: 2.13.0
@@ -1441,8 +1444,18 @@ packages:
       svelte:
         optional: true
 
+  svelte-french-toast@1.2.0:
+    resolution: {integrity: sha512-5PW+6RFX3xQPbR44CngYAP1Sd9oCq9P2FOox4FZffzJuZI2mHOB7q5gJBVnOiLF5y3moVGZ7u2bYt7+yPAgcEQ==}
+    peerDependencies:
+      svelte: ^3.57.0 || ^4.0.0
+
   svelte-routing@2.13.0:
     resolution: {integrity: sha512-/NTxqTwLc7Dq306hARJrH2HLXOBtKd7hu8nxgoFDlK0AC4SOKnzisiX/9m8Uksei1QAWtlAEdF91YphNM8iDMg==}
+
+  svelte-writable-derived@3.1.1:
+    resolution: {integrity: sha512-w4LR6/bYZEuCs7SGr+M54oipk/UQKtiMadyOhW0PTwAtJ/Ai12QS77sLngEcfBx2q4H8ZBQucc9ktSA5sUGZWw==}
+    peerDependencies:
+      svelte: ^3.2.1 || ^4.0.0-next.1 || ^5.0.0-next.94
 
   svelte@5.1.12:
     resolution: {integrity: sha512-U9BwbSybb9QAKAHg4hl61hVBk97U2QjUKmZa5++QEGoi6Nml6x6cC9KmNT1XObGawToN3DdLpdCs/Z5Yl5IXjQ==}
@@ -2913,7 +2926,16 @@ snapshots:
     optionalDependencies:
       svelte: 5.1.12
 
+  svelte-french-toast@1.2.0(svelte@5.1.12):
+    dependencies:
+      svelte: 5.1.12
+      svelte-writable-derived: 3.1.1(svelte@5.1.12)
+
   svelte-routing@2.13.0: {}
+
+  svelte-writable-derived@3.1.1(svelte@5.1.12):
+    dependencies:
+      svelte: 5.1.12
 
   svelte@5.1.12:
     dependencies:
