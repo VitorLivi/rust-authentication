@@ -49,8 +49,7 @@ impl<'a> Authenticator<'a> {
         let argon2 = Argon2::default();
 
         let user_properties = user.get_properties();
-
-        let password_hash_result = PasswordHash::new(user_properties.get("password_hash").unwrap());
+        let password_hash_result = PasswordHash::new(&user_properties.password_hash);
 
         match password_hash_result {
             Ok(password_hash) => argon2

@@ -8,30 +8,33 @@ use crate::shared::application::use_cases::use_case::UseCase;
 
 #[derive(Deserialize)]
 pub struct CreateUserUseCaseInputDto {
-    username: String,
-    password: String,
+    ask_for_new_password: bool,
+    birth_date: String,
+    email: String,
     first_name: String,
     last_name: String,
-    email: String,
-    ask_reset_password: bool,
+    password: String,
+    username: String,
 }
 
 impl CreateUserUseCaseInputDto {
     pub fn new(
-        username: String,
-        password: String,
+        ask_for_new_password: bool,
+        birth_date: String,
+        email: String,
         first_name: String,
         last_name: String,
-        email: String,
-        ask_reset_password: bool,
+        password: String,
+        username: String,
     ) -> CreateUserUseCaseInputDto {
         CreateUserUseCaseInputDto {
-            username,
-            password,
+            ask_for_new_password,
+            birth_date,
+            email,
             first_name,
             last_name,
-            email,
-            ask_reset_password,
+            password,
+            username,
         }
     }
 }
@@ -63,7 +66,7 @@ impl UseCase<CreateUserUseCaseInputDto, User> for CreateUserUseCase {
             input.last_name,
             input.email,
             password_hash,
-            input.ask_reset_password,
+            input.ask_for_new_password,
         );
 
         let result = self.user_repository.save(user);

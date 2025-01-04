@@ -17,5 +17,5 @@ pub struct UserModel {
     pub email: String,
     pub password_hash: String,
     pub status: Option<i32>,
-    pub ask_reset_password: i32,
+    pub ask_for_new_password: i32,
 }

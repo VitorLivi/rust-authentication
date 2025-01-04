@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use std::collections::HashMap;
 use uuid::Uuid;
 
@@ -16,6 +17,27 @@ impl UserCredentials {
 }
 
 #[derive(Serialize)]
+pub struct ViewUser {
+    pub id: Option<Uuid>,
+    pub username: String,
+    pub first_name: String,
+    pub last_name: String,
+    pub email: String,
+}
+
+#[derive(Serialize)]
+pub struct UserProperties {
+    pub id: Option<Uuid>,
+    pub username: String,
+    pub first_name: String,
+    pub last_name: String,
+    pub email: String,
+    pub password_hash: String,
+    pub is_authenticated: bool,
+    pub ask_for_new_password: bool,
+}
+
+#[derive(Serialize)]
 pub struct User {
     id: Option<Uuid>,
     username: String,
@@ -24,7 +46,7 @@ pub struct User {
     email: String,
     password_hash: String,
     is_authenticated: bool,
-    ask_reset_password: bool,
+    ask_for_new_password: bool,
 }
 
 impl User {
@@ -35,7 +57,7 @@ impl User {
         last_name: String,
         email: String,
         password_hash: String,
-        ask_reset_password: bool,
+        ask_for_new_password: bool,
     ) -> User {
         User {
             id: id.or(Some(Uuid::new_v4())),
@@ -45,7 +67,7 @@ impl User {
             email,
             password_hash,
             is_authenticated: false,
-            ask_reset_password,
+            ask_for_new_password,
         }
     }
 
@@ -67,24 +89,26 @@ impl User {
         return;
     }
 
-    pub fn get_properties(&self) -> HashMap<String, String> {
-        let mut properties = HashMap::new();
+    pub fn get_properties(&self) -> UserProperties {
+        UserProperties {
+            id: self.id,
+            username: self.username.clone(),
+            first_name: self.first_name.clone(),
+            last_name: self.last_name.clone(),
+            email: self.email.clone(),
+            password_hash: self.password_hash.clone(),
+            is_authenticated: self.is_authenticated,
+            ask_for_new_password: self.ask_for_new_password,
+        }
+    }
 
-        properties.insert("id".to_string(), self.id.unwrap().to_string());
-        properties.insert("username".to_string(), self.username.to_string());
-        properties.insert("first_name".to_string(), self.first_name.to_string());
-        properties.insert("last_name".to_string(), self.last_name.to_string());
-        properties.insert("email".to_string(), self.email.to_string());
-        properties.insert("password_hash".to_string(), self.password_hash.to_string());
-        properties.insert(
-            "is_authenticated".to_string(),
-            self.is_authenticated.to_string(),
-        );
-        properties.insert(
-            "ask_reset_password".to_string(),
-            self.ask_reset_password.to_string(),
-        );
-
-        return properties;
+    pub fn get_view(&self) -> ViewUser {
+        ViewUser {
+            id: self.id,
+            username: self.username.clone(),
+            first_name: self.first_name.clone(),
+            last_name: self.last_name.clone(),
+            email: self.email.clone(),
+        }
     }
 }

@@ -12,7 +12,7 @@ impl UserMapper {
             user_model.last_name.clone(),
             user_model.email.clone(),
             user_model.password_hash.clone(),
-            user_model.ask_reset_password == 1
+            user_model.ask_for_new_password == 1,
         )
     }
 
@@ -20,20 +20,20 @@ impl UserMapper {
         let user_props = user.get_properties();
 
         UserModel {
-            id: user_props.get("id").unwrap().parse().unwrap(),
-            email: user_props.get("email").unwrap().to_string(),
+            id: user_props.id.unwrap(),
+            email: user_props.email,
             created_at: None,
             updated_at: None,
-            first_name: user_props.get("first_name").unwrap().to_string(),
-            last_name: user_props.get("last_name").unwrap().to_string(),
-            username: Some(user_props.get("username").unwrap().to_string()),
-            password_hash: user_props.get("password_hash").unwrap().to_string(),
+            first_name: user_props.first_name,
+            last_name: user_props.last_name,
+            username: Some(user_props.username),
+            password_hash: user_props.password_hash,
             status: None,
-            ask_reset_password: user_props
-                .get("ask_reset_password")
-                .unwrap()
-                .parse()
-                .unwrap(),
+            ask_for_new_password: if user_props.ask_for_new_password == true {
+                1
+            } else {
+                0
+            },
         }
     }
 }
