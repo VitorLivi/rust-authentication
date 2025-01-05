@@ -1,9 +1,10 @@
-use uuid::Uuid;
-
+use diesel::pg::upsert::excluded;
+use diesel::prelude::*;
 use diesel::{
     r2d2::{ConnectionManager, PooledConnection},
     ExpressionMethods, PgConnection, QueryDsl, RunQueryDsl, SelectableHelper,
 };
+use uuid::Uuid;
 
 use crate::{
     core::domain::{entities::user::User, repository::user_repository::UserRepository},
@@ -79,14 +80,18 @@ impl Repository<User> for UserDieselRepository {
     fn save(&mut self, user: User) -> Result<User, String> {
         let result = diesel::insert_into(self.user_schema)
             .values(UserMapper::to_model(&user))
+            .on_conflict(self.user_schema.primary_key())
+            .do_update()
+            .set(UserMapper::to_model(&user))
             .get_result::<UserModel>(&mut self.connection);
 
-        if result.is_err() {
-            println!("{:?}", result.err());
-            return Err("Error saving user".to_string());
+        match result {
+            Ok(user_model) => Ok(UserMapper::to_entity(&user_model)),
+            Err(err) => {
+                println!("{:?}", err);
+                Err("Error saving user".to_string())
+            }
         }
-
-        return Ok(UserMapper::to_entity(&result.unwrap()));
     }
 
     fn delete(&mut self, id: Uuid) -> Result<(), String> {

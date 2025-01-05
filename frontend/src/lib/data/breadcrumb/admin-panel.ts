@@ -36,6 +36,10 @@ export const adminPanelBreadcrumbs  = [
                       name: "Add User",
                       path: "add-user",
                   },
+                  {
+                      name: "Edit User",
+                      path: "edit-user",
+                  },
               ],
           },
           {

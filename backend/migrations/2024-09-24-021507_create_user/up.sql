@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     last_name VARCHAR(50) NOT NULL,
     username VARCHAR(50),
     email VARCHAR(100) NOT NULL UNIQUE,
+    birth_date DATE DEFAULT NULL,
     password_hash VARCHAR(255) NOT NULL,
     ask_for_new_password INT DEFAULT 0,
     status INT DEFAULT 1

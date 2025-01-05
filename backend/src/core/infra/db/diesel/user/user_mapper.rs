@@ -11,6 +11,7 @@ impl UserMapper {
             user_model.first_name.clone(),
             user_model.last_name.clone(),
             user_model.email.clone(),
+            user_model.birth_date.clone(),
             user_model.password_hash.clone(),
             user_model.ask_for_new_password == 1,
         )
@@ -22,6 +23,7 @@ impl UserMapper {
         UserModel {
             id: user_props.id.unwrap(),
             email: user_props.email,
+            birth_date: user_props.birth_date,
             created_at: None,
             updated_at: None,
             first_name: user_props.first_name,

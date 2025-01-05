@@ -2,9 +2,32 @@
   import { Button, Datepicker, Helper, Input } from "flowbite-svelte";
   import { UserService } from "$lib/api/services/user/user";
   import toast from "svelte-french-toast";
-    import { navigate } from "svelte-routing";
+  import { navigate, useRouter } from "svelte-routing";
+  import { onMount } from "svelte";
+  import type { FindUserByIdOutput } from "$lib/api/services/user/types";
 
-  let loading = false;
+  const router = useRouter();
+  const activeRoute = router.activeRoute;
+
+  let loading = true;
+  let user: FindUserByIdOutput;
+
+  onMount(() => {
+    const userService = new UserService();
+
+    userService
+      .findById($activeRoute.params.id)
+      .then((res) => {
+        user = res.data;
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error("An error occurred while fetching the user");
+      })
+      .finally(() => {
+        loading = false;
+      });
+  });
 
   let selectedDate = "";
   let inputStates: {
@@ -93,13 +116,10 @@
 
     const requiredFields = [
       "askForNewPassword",
-      "confirmPassword",
       "email",
       "firstName",
       "lastName",
-      "password",
       "username",
-      "birthDate",
     ];
 
     formData.set("birthDate", selectedDate);
@@ -146,36 +166,34 @@
 
     const askForNewPassword = data.askForNewPassword === "on" ? true : false;
 
-    const birthDate = new Date(data.birthDate);
-    const formatedBirthDate = `${birthDate.getFullYear()}-${birthDate.getMonth() + 1}-${birthDate.getDate()}`;
-
     loading = true;
 
     const userService = new UserService();
     const createUserPromisse = userService
-      .create({
+      .update({
+        id: $activeRoute.params.id,
         username: data.username,
         email: data.email,
         password: data.password,
         first_name: data.firstName,
         last_name: data.lastName,
-        birth_date: formatedBirthDate,
+        birth_date: data.birthDate,
         ask_for_new_password: askForNewPassword,
       })
       .then(() => {
         resetForm(form);
+        navigate("/admin-panel/users");
       })
       .finally(() => {
         loading = false;
-        navigate("/admin-panel/users");
       });
 
     toast.promise(
       createUserPromisse,
       {
-        loading: "Creating user...",
-        success: "User created successfully",
-        error: "An error occurred while creating the user",
+        loading: "Updating user...",
+        success: "User updated successfully",
+        error: "An error occurred while updating the user",
       },
       { position: "top-right" },
     );
@@ -195,6 +213,7 @@
         id="username"
         name="username"
         type="text"
+        value={user?.username}
         color={inputStates.username.error ? "red" : undefined}
         placeholder={inputStates.username.placeholder}
       />
@@ -208,6 +227,7 @@
       <Input
         id="firstName"
         name="firstName"
+        value={user?.first_name}
         type="text"
         color={inputStates.firstName.error ? "red" : undefined}
         placeholder={inputStates.firstName.placeholder}
@@ -223,6 +243,7 @@
         id="lastName"
         name="lastName"
         type="text"
+        value={user?.last_name}
         color={inputStates.lastName.error ? "red" : undefined}
         placeholder="Last Name"
       />
@@ -237,6 +258,7 @@
         id="email"
         name="email"
         type="email"
+        value={user?.email}
         color={inputStates.email.error ? "red" : undefined}
         placeholder="Email"
       />
@@ -284,6 +306,7 @@
         inputClass={inputStates.birthDate.error
           ? errorDatepickerClass
           : undefined}
+        value={user?.birth_date ? new Date(user.birth_date) : undefined}
         on:select={onSelectBirthDate}
         placeholder="Birth Date"
       />
@@ -310,8 +333,6 @@
   </div>
 
   <div class="flex w-full justify-start">
-    <Button disabled={loading} class="w-[150px]" type="submit" outline
-      >Save</Button
-    >
+    <Button disabled={loading} class="w-[150px]" type="submit" outline>Save</Button>
   </div>
 </form>

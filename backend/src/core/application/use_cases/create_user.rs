@@ -5,12 +5,13 @@ use crate::core::domain::entities::authenticator::Authenticator;
 use crate::core::domain::entities::user::User;
 use crate::core::domain::repository::user_repository::UserRepository;
 use crate::shared::application::use_cases::use_case::UseCase;
+use chrono::NaiveDate;
 
 #[derive(Deserialize)]
 pub struct CreateUserUseCaseInputDto {
     ask_for_new_password: bool,
-    birth_date: String,
     email: String,
+    birth_date: Option<NaiveDate>,
     first_name: String,
     last_name: String,
     password: String,
@@ -20,8 +21,8 @@ pub struct CreateUserUseCaseInputDto {
 impl CreateUserUseCaseInputDto {
     pub fn new(
         ask_for_new_password: bool,
-        birth_date: String,
         email: String,
+        birth_date: Option<NaiveDate>,
         first_name: String,
         last_name: String,
         password: String,
@@ -29,8 +30,8 @@ impl CreateUserUseCaseInputDto {
     ) -> CreateUserUseCaseInputDto {
         CreateUserUseCaseInputDto {
             ask_for_new_password,
-            birth_date,
             email,
+            birth_date,
             first_name,
             last_name,
             password,
@@ -65,6 +66,7 @@ impl UseCase<CreateUserUseCaseInputDto, User> for CreateUserUseCase {
             input.first_name,
             input.last_name,
             input.email,
+            input.birth_date,
             password_hash,
             input.ask_for_new_password,
         );

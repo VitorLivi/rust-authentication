@@ -13,6 +13,7 @@ diesel::table! {
         username -> Nullable<Varchar>,
         #[max_length = 100]
         email -> Varchar,
+        birth_date -> Nullable<Date>,
         #[max_length = 255]
         password_hash -> Varchar,
         status -> Nullable<Int4>,

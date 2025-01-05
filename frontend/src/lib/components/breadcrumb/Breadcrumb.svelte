@@ -1,4 +1,4 @@
-<script context="module">
+<script context="module" lang="ts">
   export type BreadcrumbItem = {
     name: string;
     path: string;
