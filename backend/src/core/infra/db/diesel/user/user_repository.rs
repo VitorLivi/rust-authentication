@@ -95,13 +95,15 @@ impl Repository<User> for UserDieselRepository {
     }
 
     fn delete(&mut self, id: Uuid) -> Result<(), String> {
-        let result = diesel::update(self.user_schema.filter(user::id.eq(id)))
-            .set(user::status.eq(0))
+        let result = diesel::delete(self.user_schema.filter(user::id.eq(id)))
             .execute(&mut self.connection);
 
         match result {
             Ok(_) => Ok(()),
-            Err(_) => Err("Error deleting user".to_string()),
+            Err(err) => {
+                println!("{:?}", err);
+                Err("Error deleting user".to_string())
+            }
         }
     }
 }

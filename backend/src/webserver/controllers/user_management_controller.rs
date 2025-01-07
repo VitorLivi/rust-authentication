@@ -1,6 +1,7 @@
 use crate::{
     core::application::use_cases::create_user::CreateUserUseCase,
     core::application::use_cases::create_user::CreateUserUseCaseInputDto,
+    core::application::use_cases::delete_user::DeleteUserUseCase,
     core::application::use_cases::find_user::FindUserUseCase,
     core::application::use_cases::list_user::ListUserUseCase,
     core::application::use_cases::update_user::UpdateUserUseCase,
@@ -9,7 +10,7 @@ use crate::{
     shared::application::use_cases::use_case::UseCase, webserver::config::database::Database,
 };
 use actix_session::Session;
-use actix_web::{get, post, put, web, HttpResponse, Responder};
+use actix_web::{delete, get, post, put, web, HttpResponse, Responder};
 
 #[post("/create")]
 pub async fn sign_up(
@@ -78,9 +79,36 @@ pub async fn find(session: Session, path: web::Path<String>) -> impl Responder {
     }
 }
 
+#[delete("/delete/{id}")]
+pub async fn delete(session: Session, path: web::Path<String>) -> impl Responder {
+    let pool = Database::get_pool();
+    let user_repository = UserDieselRepository::new(pool.get().unwrap(), user::table);
+    let mut delete_user = DeleteUserUseCase::new(session, Box::new(user_repository));
+
+    let id = path.into_inner();
+
+    if id.is_empty() {
+        return HttpResponse::BadRequest().body("Id is required");
+    }
+
+    let delete_result = delete_user.execute(id);
+
+    match delete_result {
+        Ok(_) => HttpResponse::Ok().body("User deleted"),
+        Err(message) => {
+            if message == "User not found" {
+                HttpResponse::NotFound().body(message)
+            } else {
+                HttpResponse::BadRequest().body(message)
+            }
+        }
+    }
+}
+
 pub fn config_routes(cfg: &mut web::ServiceConfig) {
     cfg.service(sign_up);
     cfg.service(update);
+    cfg.service(delete);
     cfg.service(list);
     cfg.service(find);
 }

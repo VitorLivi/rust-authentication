@@ -11,6 +11,10 @@ export class UserService {
     return http.put('/update', input);
   }
 
+  public async delete(id: string) {
+    return http.delete(`/delete/${id}`);
+  }
+
   public async list(): Promise<AxiosResponse<ListUserOutput[]>> {
     return http.get('/list')
   }

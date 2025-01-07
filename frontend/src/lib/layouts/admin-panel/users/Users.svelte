@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { Link, Route, Router, useLocation } from "svelte-routing";
+  import { Link, Route, useLocation } from "svelte-routing";
   import { isRoute } from "$lib/utils/routing";
   import {
+    Modal,
     Spinner,
     Table,
     TableBody,
@@ -17,18 +18,27 @@
   import { UserService } from "$lib/api/services/user/user";
   import { onMount } from "svelte";
   import EditUser from "./EditUser.svelte";
+  import { ExclamationCircleOutline } from "flowbite-svelte-icons";
+  import toast from "svelte-french-toast";
+  import type { ListUserOutput } from "$lib/api/services/user/types";
 
-  let loading = true;
-  let users = [];
-
-  const userService = new UserService();
+  let loading = $state(true);
+  let isModalOpen = $state({
+    value: false,
+    id: "",
+  });
+  let users: (ListUserOutput & { isDeleting: boolean })[] = $state([]);
 
   onMount(() => {
+    const userService = new UserService();
     userService
       .list()
       .then((res) => {
-        users = res.data;
-        console.log(users);
+        users = res.data.map((user: any) => {
+          user.isDeleting = false;
+
+          return user;
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -39,27 +49,97 @@
   });
 
   let location = useLocation();
+
+  function onClickDeleteButton(id: string): void {
+    isModalOpen = {
+      value: true,
+      id,
+    };
+  }
+
+  function onCancelDelete(): void {
+    isModalOpen = {
+      value: false,
+      id: "",
+    };
+  }
+
+  function onConfirmDelete(): void {
+    const userService = new UserService();
+    let usersCopy = [...users];
+
+    const userIndex = usersCopy.findIndex((user) => user.id === isModalOpen.id);
+
+    if (userIndex === -1) {
+      return;
+    }
+
+    usersCopy[userIndex].isDeleting = true;
+
+    const deletePromisse = userService
+      .delete(isModalOpen.id)
+      .then(() => {
+        usersCopy = usersCopy.filter((user) => user.id !== isModalOpen.id);
+        users = [...usersCopy];
+      })
+      .catch((err) => {
+        console.error(err);
+        usersCopy[userIndex].isDeleting = false;
+        users = [...usersCopy];
+
+        return Promise.reject(err);
+      })
+      .finally(() => {
+        isModalOpen = {
+          value: false,
+          id: "",
+        };
+      });
+
+    toast.promise(
+      deletePromisse,
+      {
+        loading: "Deleting user...",
+        success: "User deleted successfully",
+        error: "An error occurred while deleting the user",
+      },
+      { position: "top-right" },
+    );
+  }
 </script>
 
-<Router>
-  <div class="container mt-4">
-    {#if isRoute("/admin-panel/users", $location)}
-      {#if loading}
-        <div class="w-full flex justify-center items-center h-[100px]">
-          <div class="flex flex-row gap-4 items-center">
-            <Spinner />
-            <h1 class="text-primary-500 text-[24px] font-bold">
-              Loading users...
-            </h1>
-          </div>
+<Modal bind:open={isModalOpen.value} size="xs" autoclose>
+  <div class="text-center">
+    <ExclamationCircleOutline
+      class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+    />
+    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+      Are you sure you want to delete this user?
+    </h3>
+    <Button onclick={onConfirmDelete} color="red" class="me-2"
+      >Yes, I'm sure</Button
+    >
+    <Button onclick={onCancelDelete} color="alternative">No, cancel</Button>
+  </div>
+</Modal>
+
+<div class="container mt-4">
+  {#if isRoute("/admin-panel/users", $location)}
+    {#if loading}
+      <div class="w-full flex justify-center items-center h-[100px]">
+        <div class="flex flex-row gap-4 items-center">
+          <Spinner />
+          <h1 class="text-primary-500 text-[24px] font-bold">
+            Loading users...
+          </h1>
         </div>
-      {/if}
+      </div>
+    {/if}
 
-      {#if !loading && users.length === 0}
-        <div>No users found</div>
-      {/if}
-
-      {#if !loading && users.length > 0}
+    {#if !loading}
+      {#if users.length === 0}
+        <h1 class="text-primary-500">No users found</h1>
+      {:else}
         <Table
           items={users}
           placeholder="Search by user"
@@ -90,21 +170,26 @@
                     <TableEditIcon />
                   </Link>
 
-                  <TableDeleteIcon />
+                  <button
+                    disabled={item.isDeleting}
+                    onclick={() => onClickDeleteButton(item.id)}
+                  >
+                    <TableDeleteIcon />
+                  </button>
                 </div>
               </TableBodyCell>
             </TableBodyRow>
           </TableBody>
         </Table>
-        <div class="flex flex-row justify-start mb-4 mt-4">
-          <Link to="/admin-panel/users/add-user">
-            <Button outline>Add User</Button>
-          </Link>
-        </div>
       {/if}
+      <div class="flex flex-row justify-start mb-4 mt-4">
+        <Link to="/admin-panel/users/add-user">
+          <Button outline>Add User</Button>
+        </Link>
+      </div>
     {/if}
+  {/if}
 
-    <Route path="/admin-panel/users/add-user" component={AddUser} />
-    <Route path="/admin-panel/users/edit-user/:id" component={EditUser} />
-  </div>
-</Router>
+  <Route path="/admin-panel/users/add-user" component={AddUser} />
+  <Route path="/admin-panel/users/edit-user/:id" component={EditUser} />
+</div>

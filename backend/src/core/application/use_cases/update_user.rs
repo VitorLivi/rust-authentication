@@ -73,7 +73,7 @@ impl UseCase<UpdateUserUseCaseInputDto, Result<User, &'static str>> for UpdateUs
         }
 
         let mut found_user = find_result.unwrap();
-        let mut string_birth_date = input.birth_date.unwrap();
+        let string_birth_date = input.birth_date.unwrap();
         let mut birth_date: Option<NaiveDate> = None;
 
         if !string_birth_date.is_empty() {
