@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import InputEmail from "$lib/components/input-email/InputEmail.svelte";
   import InputPassword from "$lib/components/input-password/InputPassword.svelte";
 </script>

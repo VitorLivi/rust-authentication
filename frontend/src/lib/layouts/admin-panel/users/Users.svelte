@@ -27,6 +27,7 @@
     value: false,
     id: "",
   });
+
   let users: (ListUserOutput & { isDeleting: boolean })[] = $state([]);
 
   onMount(() => {

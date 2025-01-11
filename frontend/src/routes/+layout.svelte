@@ -1,7 +1,7 @@
-<script>
-    import { Toaster } from "svelte-french-toast";
+<script lang="ts">
+  import { Toaster } from "svelte-french-toast";
   import "../app.css";
 </script>
 
-<Toaster/>
+<Toaster />
 <slot />
