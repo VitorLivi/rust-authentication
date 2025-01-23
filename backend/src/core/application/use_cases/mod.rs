@@ -4,3 +4,4 @@ pub mod delete_user;
 pub mod find_user;
 pub mod list_user;
 pub mod update_user;
+pub mod add_permission;

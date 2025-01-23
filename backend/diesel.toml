@@ -6,4 +6,4 @@ file = "src/schema.rs"
 custom_type_derives = ["diesel::query_builder::QueryId", "Clone"]
 
 [migrations_directory]
-dir = "/home/vitor/Documents/Personal Projects/rust/authentication/migrations"
+dir = "/home/vitor/Documents/Personal Projects/rust/authentication/backend/migrations"

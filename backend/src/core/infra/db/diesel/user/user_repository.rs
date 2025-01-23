@@ -1,4 +1,3 @@
-use diesel::pg::upsert::excluded;
 use diesel::prelude::*;
 use diesel::{
     r2d2::{ConnectionManager, PooledConnection},
@@ -95,8 +94,8 @@ impl Repository<User> for UserDieselRepository {
     }
 
     fn delete(&mut self, id: Uuid) -> Result<(), String> {
-        let result = diesel::delete(self.user_schema.filter(user::id.eq(id)))
-            .execute(&mut self.connection);
+        let result =
+            diesel::delete(self.user_schema.filter(user::id.eq(id))).execute(&mut self.connection);
 
         match result {
             Ok(_) => Ok(()),

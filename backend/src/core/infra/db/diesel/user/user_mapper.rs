@@ -1,5 +1,6 @@
 use super::user_model::UserModel;
 use crate::core::domain::entities::user::User;
+use std::time::SystemTime;
 
 pub struct UserMapper {}
 
@@ -24,8 +25,8 @@ impl UserMapper {
             id: user_props.id.unwrap(),
             email: user_props.email,
             birth_date: user_props.birth_date,
-            created_at: None,
-            updated_at: None,
+            created_at: SystemTime::now(),
+            updated_at: SystemTime::now(),
             first_name: user_props.first_name,
             last_name: user_props.last_name,
             username: Some(user_props.username),
