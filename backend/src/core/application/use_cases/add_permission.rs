@@ -17,18 +17,15 @@ impl AddPermissionUseCaseInputDto {
 }
 
 pub struct AddPermissionUseCase {
-    session: Session,
     permission_repository: Box<dyn PermissionRepository + 'static>,
 }
 
 impl AddPermissionUseCase {
     pub fn new(
-        session: Session,
         permission_repository: Box<dyn PermissionRepository + 'static>,
     ) -> AddPermissionUseCase {
         AddPermissionUseCase {
             permission_repository,
-            session,
         }
     }
 }

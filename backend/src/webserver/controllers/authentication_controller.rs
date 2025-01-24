@@ -1,5 +1,6 @@
 use crate::core::infra::db::diesel::user::user_repository::UserDieselRepository;
 use crate::shared::application::use_cases::use_case::UseCase;
+use ::actix_web::web;
 use actix_session::Session;
 use actix_web::web::Json;
 use actix_web::{post, web::ServiceConfig, HttpResponse, Responder};
@@ -25,5 +26,7 @@ pub async fn authenticate(
 }
 
 pub fn config_routes(cfg: &mut ServiceConfig) {
-    cfg.service(authenticate);
+    let scope = web::scope("/auth").service(authenticate);
+
+    cfg.service(scope);
 }

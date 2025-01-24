@@ -1,11 +1,7 @@
 use actix_session::Session;
-use serde::Deserialize;
 
-use crate::core::domain::entities::authenticator::Authenticator;
-use crate::core::domain::entities::user::User;
 use crate::core::domain::repository::user_repository::UserRepository;
 use crate::shared::application::use_cases::use_case::UseCase;
-use chrono::NaiveDate;
 
 pub struct DeleteUserUseCase {
     session: Session,
@@ -40,6 +36,6 @@ impl UseCase<String, Result<(), &'static str>> for DeleteUserUseCase {
         return match delete_result {
             Ok(_) => Ok(()),
             Err(_) => Err("Error deleting user"),
-        }
+        };
     }
 }

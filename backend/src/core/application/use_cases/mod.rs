@@ -1,7 +1,9 @@
+pub mod add_permission;
 pub mod authenticate_user;
 pub mod create_user;
+pub mod delete_permission;
+pub mod update_permission;
 pub mod delete_user;
 pub mod find_user;
 pub mod list_user;
 pub mod update_user;
-pub mod add_permission;

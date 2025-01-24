@@ -106,9 +106,12 @@ pub async fn delete(session: Session, path: web::Path<String>) -> impl Responder
 }
 
 pub fn config_routes(cfg: &mut web::ServiceConfig) {
-    cfg.service(sign_up);
-    cfg.service(update);
-    cfg.service(delete);
-    cfg.service(list);
-    cfg.service(find);
+    let scope = web::scope("/user")
+        .service(sign_up)
+        .service(update)
+        .service(delete)
+        .service(list)
+        .service(find);
+
+    cfg.service(scope);
 }

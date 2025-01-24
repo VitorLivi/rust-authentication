@@ -7,6 +7,7 @@ pub mod permission_management_controller;
 pub fn config_all_routes(cfg: &mut web::ServiceConfig) {
     authentication_controller::config_routes(cfg);
     user_management_controller::config_routes(cfg);
+    permission_management_controller::config_routes(cfg);
 
     cfg.route("/health", web::get().to(|| async { "OK" }));
     // return html
