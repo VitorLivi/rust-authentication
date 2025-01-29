@@ -33,11 +33,7 @@ impl AddPermissionUseCase {
 impl UseCase<AddPermissionUseCaseInputDto, Result<(), String>> for AddPermissionUseCase {
     fn execute(&mut self, input: AddPermissionUseCaseInputDto) -> Result<(), String> {
         let permission = Permission::new(None, input.name.clone());
-        let save_result = self.permission_repository.save(permission);
-
-        if save_result.is_err() {
-            return Err(save_result.err().unwrap());
-        }
+        self.permission_repository.save(permission)?;
 
         Ok(())
     }
