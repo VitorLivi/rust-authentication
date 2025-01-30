@@ -2,6 +2,7 @@ use actix_session::Session;
 
 use crate::core::domain::repository::user_repository::UserRepository;
 use crate::shared::application::use_cases::use_case::UseCase;
+use crate::shared::webserver::errors::webservice_error::WebserviceError;
 
 pub struct DeleteUserUseCase {
     session: Session,
@@ -20,22 +21,30 @@ impl DeleteUserUseCase {
     }
 }
 
-impl UseCase<String, Result<(), &'static str>> for DeleteUserUseCase {
-    fn execute(&mut self, id: String) -> Result<(), &'static str> {
+impl UseCase<String, Result<(), WebserviceError>> for DeleteUserUseCase {
+    fn execute(&mut self, id: String) -> Result<(), WebserviceError> {
         let uuid = uuid::Uuid::parse_str(&id).unwrap();
-        let found_user = self.user_repository.find_by_id(uuid);
+        let user_result = self.user_repository.find_by_id(uuid);
 
-        if found_user.is_none() {
-            return Err("User not found");
+        if user_result.is_err() {
+            return Err(WebserviceError::InternalServerError(
+                "Error finding user".to_string(),
+            ));
         }
 
-        println!("FOUND USER: {:?}", found_user.unwrap().get_id());
+        let user = user_result.unwrap();
+
+        if user.is_none() {
+            return Err(WebserviceError::NotFound("User not found".to_string()));
+        }
 
         let delete_result = self.user_repository.delete(uuid);
 
         return match delete_result {
             Ok(_) => Ok(()),
-            Err(_) => Err("Error deleting user"),
+            Err(_) => Err(WebserviceError::InternalServerError(
+                "Error deleting user".to_string(),
+            )),
         };
     }
 }

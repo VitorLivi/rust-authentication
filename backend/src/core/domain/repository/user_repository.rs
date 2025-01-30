@@ -3,5 +3,5 @@ use crate::{
 };
 
 pub trait UserRepository: Repository<User> {
-    fn find_by_username(&mut self, username: String) -> Option<User>;
+    fn find_by_username(&mut self, username: String) -> Result<User, String>;
 }

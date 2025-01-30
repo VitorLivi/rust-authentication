@@ -2,6 +2,7 @@ use serde::Deserialize;
 
 use crate::core::domain::repository::permission_repository::PermissionRepository;
 use crate::shared::application::use_cases::use_case::UseCase;
+use crate::shared::webserver::errors::webservice_error::WebserviceError;
 use uuid::Uuid;
 
 #[derive(Deserialize)]
@@ -29,12 +30,16 @@ impl DeletePermissionUseCase {
     }
 }
 
-impl UseCase<DeletePermissionUseCaseInputDto, Result<(), String>> for DeletePermissionUseCase {
-    fn execute(&mut self, input: DeletePermissionUseCaseInputDto) -> Result<(), String> {
+impl UseCase<DeletePermissionUseCaseInputDto, Result<(), WebserviceError>>
+    for DeletePermissionUseCase
+{
+    fn execute(&mut self, input: DeletePermissionUseCaseInputDto) -> Result<(), WebserviceError> {
         let delete_result = self.permission_repository.delete(input.id);
 
         if delete_result.is_err() {
-            return Err(delete_result.err().unwrap());
+            return Err(WebserviceError::InternalServerError(
+                "Error deleting permission".to_string(),
+            ));
         }
 
         Ok(())

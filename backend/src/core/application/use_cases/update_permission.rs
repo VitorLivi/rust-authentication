@@ -1,6 +1,7 @@
 use crate::core::domain::entities::permission::Permission;
 use crate::core::domain::repository::permission_repository::PermissionRepository;
 use crate::shared::application::use_cases::use_case::UseCase;
+use crate::shared::webserver::errors::webservice_error::WebserviceError;
 use serde::Deserialize;
 use uuid::Uuid;
 
@@ -30,13 +31,17 @@ impl UpdatePermissionUseCase {
     }
 }
 
-impl UseCase<UpdatePermissionUseCaseInputDto, Result<(), String>> for UpdatePermissionUseCase {
-    fn execute(&mut self, input: UpdatePermissionUseCaseInputDto) -> Result<(), String> {
+impl UseCase<UpdatePermissionUseCaseInputDto, Result<(), WebserviceError>>
+    for UpdatePermissionUseCase
+{
+    fn execute(&mut self, input: UpdatePermissionUseCaseInputDto) -> Result<(), WebserviceError> {
         let permission = Permission::new(Some(input.id), input.name.clone());
         let update_result = self.permission_repository.save(permission);
 
         if update_result.is_err() {
-            return Err(update_result.err().unwrap());
+            return Err(WebserviceError::InternalServerError(
+                "Error updating permission".to_string(),
+            ));
         }
 
         Ok(())

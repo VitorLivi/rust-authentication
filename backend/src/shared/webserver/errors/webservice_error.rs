@@ -1,4 +1,3 @@
-use crate::shared::application::errors::application_error::ApplicationError;
 use crate::shared::domain::errors::domain_error::DomainError;
 use actix_web::{HttpResponse, ResponseError};
 use diesel::result::Error;
@@ -59,17 +58,6 @@ impl From<DomainError> for WebserviceError {
     fn from(error: DomainError) -> Self {
         match error {
             DomainError::TestError => WebserviceError::InternalServerError("TestError".to_string()),
-            _ => WebserviceError::InternalServerError("Unexpected Error".to_string()),
-        }
-    }
-}
-
-impl From<ApplicationError> for WebserviceError {
-    fn from(error: ApplicationError) -> Self {
-        match error {
-            ApplicationError::TestError => {
-                WebserviceError::InternalServerError("TestError".to_string())
-            }
             _ => WebserviceError::InternalServerError("Unexpected Error".to_string()),
         }
     }

@@ -1,9 +1,9 @@
-use actix_session::Session;
 use serde::Deserialize;
 
 use crate::core::domain::entities::permission::Permission;
 use crate::core::domain::repository::permission_repository::PermissionRepository;
 use crate::shared::application::use_cases::use_case::UseCase;
+use crate::shared::webserver::errors::webservice_error::WebserviceError;
 
 #[derive(Deserialize)]
 pub struct AddPermissionUseCaseInputDto {
@@ -30,10 +30,16 @@ impl AddPermissionUseCase {
     }
 }
 
-impl UseCase<AddPermissionUseCaseInputDto, Result<(), String>> for AddPermissionUseCase {
-    fn execute(&mut self, input: AddPermissionUseCaseInputDto) -> Result<(), String> {
+impl UseCase<AddPermissionUseCaseInputDto, Result<(), WebserviceError>> for AddPermissionUseCase {
+    fn execute(&mut self, input: AddPermissionUseCaseInputDto) -> Result<(), WebserviceError> {
         let permission = Permission::new(None, input.name.clone());
-        self.permission_repository.save(permission)?;
+        let result = self.permission_repository.save(permission);
+
+        if result.is_err() {
+            return Err(WebserviceError::InternalServerError(
+                "Error saving permission".to_string(),
+            ));
+        }
 
         Ok(())
     }

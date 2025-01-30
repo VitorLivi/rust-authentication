@@ -1,10 +1,8 @@
-use actix_session::Session;
-use serde::Deserialize;
-
-use crate::core::domain::entities::authenticator::Authenticator;
-use crate::core::domain::entities::user::{User, ViewUser};
+use crate::core::domain::entities::user::ViewUser;
 use crate::core::domain::repository::user_repository::UserRepository;
 use crate::shared::application::use_cases::use_case::UseCase;
+use crate::shared::webserver::errors::webservice_error::WebserviceError;
+use actix_session::Session;
 
 pub struct ListUserUseCase {
     session: Session,
@@ -23,10 +21,16 @@ impl ListUserUseCase {
     }
 }
 
-impl UseCase<(), Vec<ViewUser>> for ListUserUseCase {
-    fn execute(&mut self, _input: ()) -> Vec<ViewUser> {
+impl UseCase<(), Result<Vec<ViewUser>, WebserviceError>> for ListUserUseCase {
+    fn execute(&mut self, _input: ()) -> Result<Vec<ViewUser>, WebserviceError> {
         let users = self.user_repository.find_all();
 
-        return users.iter().map(|user| user.get_view()).collect();
+        if users.is_err() {
+            return Err(WebserviceError::InternalServerError(
+                "Error listing users".to_string(),
+            ));
+        }
+
+        return Ok(users.unwrap().iter().map(|user| user.get_view()).collect());
     }
 }

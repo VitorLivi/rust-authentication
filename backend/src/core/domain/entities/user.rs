@@ -1,10 +1,8 @@
 use chrono::NaiveDate;
 use serde::Serialize;
-use serde_json::Value;
-use std::collections::HashMap;
 use uuid::Uuid;
 
-use crate::core::domain::entities::authenticator::Authenticator;
+use crate::core::domain::services::authenticator::Authenticator;
 
 pub struct UserCredentials {
     pub username: String,
