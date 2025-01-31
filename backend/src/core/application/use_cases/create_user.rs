@@ -1,9 +1,9 @@
 use actix_session::Session;
 use serde::Deserialize;
 
-use crate::core::domain::services::authenticator::Authenticator;
 use crate::core::domain::entities::user::User;
 use crate::core::domain::repository::user_repository::UserRepository;
+use crate::core::domain::services::authenticator::Authenticator;
 use crate::shared::application::use_cases::use_case::UseCase;
 use crate::shared::webserver::errors::webservice_error::WebserviceError;
 use chrono::NaiveDate;
@@ -74,12 +74,11 @@ impl UseCase<CreateUserUseCaseInputDto, Result<User, WebserviceError>> for Creat
 
         let result = self.user_repository.save(user);
 
-        if result.is_err() {
-            return Err(WebserviceError::InternalServerError(
+        match result {
+            Ok(user) => Ok(user),
+            Err(_) => Err(WebserviceError::InternalServerError(
                 "Error saving user".to_string(),
-            ));
+            )),
         }
-
-        return Ok(result.unwrap());
     }
 }

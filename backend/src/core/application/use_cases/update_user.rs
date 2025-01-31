@@ -1,10 +1,10 @@
 use actix_session::Session;
 use serde::Deserialize;
 
-use crate::core::domain::services::authenticator::Authenticator;
 use crate::core::domain::entities::user::User;
 use crate::core::domain::entities::user::UserUpdatableProperties;
 use crate::core::domain::repository::user_repository::UserRepository;
+use crate::core::domain::services::authenticator::Authenticator;
 use crate::shared::application::use_cases::use_case::UseCase;
 use crate::shared::webserver::errors::webservice_error::WebserviceError;
 use chrono::NaiveDate;
@@ -68,19 +68,17 @@ impl UseCase<UpdateUserUseCaseInputDto, Result<User, WebserviceError>> for Updat
             .user_repository
             .find_by_id(uuid::Uuid::parse_str(&input.id).unwrap());
 
-        if find_result.is_err() {
-            return Err(WebserviceError::InternalServerError(
-                "Error finding user".to_string(),
-            ));
+        match find_result {
+            Ok(None) => return Err(WebserviceError::NotFound("User not found".to_string())),
+            Err(_) => {
+                return Err(WebserviceError::InternalServerError(
+                    "Error finding user".to_string(),
+                ))
+            }
+            _ => {}
         }
 
-        let user = find_result.unwrap();
-
-        if user.is_none() {
-            return Err(WebserviceError::NotFound("User not found".to_string()));
-        }
-
-        let mut found_user = user.unwrap();
+        let mut found_user = find_result.unwrap().unwrap();
         let string_birth_date = input.birth_date.unwrap();
         let mut birth_date: Option<NaiveDate> = None;
 
@@ -104,12 +102,13 @@ impl UseCase<UpdateUserUseCaseInputDto, Result<User, WebserviceError>> for Updat
 
         let save_result = self.user_repository.save(found_user);
 
-        if save_result.is_err() {
-            return Err(WebserviceError::InternalServerError(
-                "Error saving user".to_string(),
-            ));
+        match save_result {
+            Ok(user) => Ok(user),
+            Err(_) => {
+                return Err(WebserviceError::InternalServerError(
+                    "Error saving user".to_string(),
+                ))
+            }
         }
-
-        return Ok(save_result.unwrap());
     }
 }

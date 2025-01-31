@@ -1,10 +1,9 @@
+use crate::core::domain::entities::user::{User, UserCredentials};
 use actix_session::Session;
 use argon2::{
     password_hash::{rand_core::OsRng, SaltString},
     Argon2, PasswordHash, PasswordHasher, PasswordVerifier,
 };
-
-use super::user::{User, UserCredentials};
 
 pub struct Authenticator<'a> {
     session: &'a Session,
@@ -68,7 +67,6 @@ impl<'a> Authenticator<'a> {
         println!("Salt: {}", salt);
 
         let password_hash = argon2.hash_password(password.as_bytes(), &salt).unwrap();
-
         return password_hash.to_string();
     }
 }

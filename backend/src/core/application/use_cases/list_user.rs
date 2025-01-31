@@ -23,14 +23,17 @@ impl ListUserUseCase {
 
 impl UseCase<(), Result<Vec<ViewUser>, WebserviceError>> for ListUserUseCase {
     fn execute(&mut self, _input: ()) -> Result<Vec<ViewUser>, WebserviceError> {
-        let users = self.user_repository.find_all();
+        let find_result = self.user_repository.find_all();
 
-        if users.is_err() {
-            return Err(WebserviceError::InternalServerError(
-                "Error listing users".to_string(),
-            ));
+        match find_result {
+            Ok(users) => {
+                return Ok(users.iter().map(|user| user.get_view()).collect());
+            }
+            Err(_) => {
+                return Err(WebserviceError::InternalServerError(
+                    "Error listing users".to_string(),
+                ))
+            }
         }
-
-        return Ok(users.unwrap().iter().map(|user| user.get_view()).collect());
     }
 }

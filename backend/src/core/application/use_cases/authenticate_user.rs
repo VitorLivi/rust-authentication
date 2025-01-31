@@ -1,9 +1,9 @@
 use actix_session::Session;
 use serde::Deserialize;
 
-use crate::core::domain::services::authenticator::Authenticator;
 use crate::core::domain::entities::user::UserCredentials;
 use crate::core::domain::repository::user_repository::UserRepository;
+use crate::core::domain::services::authenticator::Authenticator;
 use crate::shared::application::use_cases::use_case::UseCase;
 use crate::shared::webserver::errors::webservice_error::WebserviceError;
 
@@ -46,15 +46,26 @@ impl UseCase<AuthenticateUserUseCaseInputDto, Result<(), WebserviceError>>
             .user_repository
             .find_by_username(input.username.clone());
 
-        if result.is_err() {
-            return Err(WebserviceError::NotFound("User not found".to_string()));
+        match result {
+            Ok(Some(mut user)) => {
+                let user_credentials = &mut UserCredentials::new(input.username, input.password);
+                user.authenticate(&mut authenticator, user_credentials);
+
+                match self.user_repository.save(user) {
+                    Ok(_) => Ok(()),
+                    Err(_) => {
+                        return Err(WebserviceError::InternalServerError(
+                            "Error saving user".to_string(),
+                        ))
+                    }
+                }
+            }
+            Ok(None) => return Err(WebserviceError::NotFound("User not found".to_string())),
+            Err(_) => {
+                return Err(WebserviceError::InternalServerError(
+                    "Error finding user".to_string(),
+                ))
+            }
         }
-
-        let user_credentials = &mut UserCredentials::new(input.username, input.password);
-
-        let mut user = result.unwrap();
-        user.authenticate(&mut authenticator, user_credentials);
-
-        Ok(())
     }
 }

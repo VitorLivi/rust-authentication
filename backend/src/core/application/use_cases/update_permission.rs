@@ -38,12 +38,12 @@ impl UseCase<UpdatePermissionUseCaseInputDto, Result<(), WebserviceError>>
         let permission = Permission::new(Some(input.id), input.name.clone());
         let update_result = self.permission_repository.save(permission);
 
-        if update_result.is_err() {
-            return Err(WebserviceError::InternalServerError(
+        match update_result {
+            Ok(_) => Ok(()),
+            Err(_) => Err(WebserviceError::InternalServerError(
                 "Error updating permission".to_string(),
-            ));
+            )),
         }
 
-        Ok(())
     }
 }

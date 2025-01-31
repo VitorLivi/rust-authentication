@@ -26,25 +26,23 @@ impl UseCase<String, Result<(), WebserviceError>> for DeleteUserUseCase {
         let uuid = uuid::Uuid::parse_str(&id).unwrap();
         let user_result = self.user_repository.find_by_id(uuid);
 
-        if user_result.is_err() {
-            return Err(WebserviceError::InternalServerError(
-                "Error finding user".to_string(),
-            ));
+        match user_result {
+            Ok(None) => return Err(WebserviceError::NotFound("User not found".to_string())),
+            Ok(Some(_)) => {
+                let delete_result = self.user_repository.delete(uuid);
+
+                return match delete_result {
+                    Ok(_) => Ok(()),
+                    Err(_) => Err(WebserviceError::InternalServerError(
+                        "Error deleting user".to_string(),
+                    )),
+                };
+            }
+            Err(_) => {
+                return Err(WebserviceError::InternalServerError(
+                    "Error finding user".to_string(),
+                ))
+            }
         }
-
-        let user = user_result.unwrap();
-
-        if user.is_none() {
-            return Err(WebserviceError::NotFound("User not found".to_string()));
-        }
-
-        let delete_result = self.user_repository.delete(uuid);
-
-        return match delete_result {
-            Ok(_) => Ok(()),
-            Err(_) => Err(WebserviceError::InternalServerError(
-                "Error deleting user".to_string(),
-            )),
-        };
     }
 }

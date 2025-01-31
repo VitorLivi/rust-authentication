@@ -28,18 +28,12 @@ impl UseCase<String, Result<ViewUser, WebserviceError>> for FindUserUseCase {
             .user_repository
             .find_by_id(uuid::Uuid::parse_str(&id).unwrap());
 
-        if user_result.is_err() {
-            return Err(WebserviceError::InternalServerError(
+        match user_result {
+            Ok(Some(user)) => Ok(user.get_view()),
+            Ok(None) => Err(WebserviceError::NotFound("User not found".to_string())),
+            Err(_) => Err(WebserviceError::InternalServerError(
                 "Error finding user".to_string(),
-            ));
+            )),
         }
-
-        let user = user_result.unwrap();
-
-        if user.is_none() {
-            return Err(WebserviceError::NotFound("User not found".to_string()));
-        }
-
-        Ok(user.unwrap().get_view())
     }
 }

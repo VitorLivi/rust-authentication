@@ -35,12 +35,11 @@ impl UseCase<AddPermissionUseCaseInputDto, Result<(), WebserviceError>> for AddP
         let permission = Permission::new(None, input.name.clone());
         let result = self.permission_repository.save(permission);
 
-        if result.is_err() {
-            return Err(WebserviceError::InternalServerError(
+        match result {
+            Ok(_) => Ok(()),
+            Err(_) => Err(WebserviceError::InternalServerError(
                 "Error saving permission".to_string(),
-            ));
+            )),
         }
-
-        Ok(())
     }
 }

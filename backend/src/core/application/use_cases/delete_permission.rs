@@ -36,12 +36,13 @@ impl UseCase<DeletePermissionUseCaseInputDto, Result<(), WebserviceError>>
     fn execute(&mut self, input: DeletePermissionUseCaseInputDto) -> Result<(), WebserviceError> {
         let delete_result = self.permission_repository.delete(input.id);
 
-        if delete_result.is_err() {
-            return Err(WebserviceError::InternalServerError(
-                "Error deleting permission".to_string(),
-            ));
+        match delete_result {
+            Ok(_) => Ok(()),
+            Err(_) => {
+                return Err(WebserviceError::InternalServerError(
+                    "Error deleting permission".to_string(),
+                ));
+            }
         }
-
-        Ok(())
     }
 }
