@@ -9,20 +9,24 @@ use crate::core::application::use_cases::authenticate_user::{
     AuthenticateUserUseCase, AuthenticateUserUseCaseInputDto,
 };
 use crate::schema::user;
+use crate::shared::webserver::types::response::WebserviceResponse;
 use crate::webserver::config::database::Database;
 
 #[post("/authenticate")]
 pub async fn authenticate(
     session: Session,
     body: Json<AuthenticateUserUseCaseInputDto>,
-) -> impl Responder {
+) -> WebserviceResponse {
     let pool = Database::get_pool();
     let user_repository = UserDieselRepository::new(pool.get().unwrap(), user::table);
     let mut authenticate_user = AuthenticateUserUseCase::new(session, Box::new(user_repository));
 
-    authenticate_user.execute(body.0);
+    let authenticate_result = authenticate_user.execute(body.0);
 
-    HttpResponse::Ok().body("OK")
+    match authenticate_result {
+        Ok(_) => Ok(HttpResponse::Ok().body("OK")),
+        Err(err) => Err(err),
+    }
 }
 
 pub fn config_routes(cfg: &mut ServiceConfig) {

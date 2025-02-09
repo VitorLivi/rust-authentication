@@ -44,6 +44,5 @@ impl UseCase<UpdatePermissionUseCaseInputDto, Result<(), WebserviceError>>
                 "Error updating permission".to_string(),
             )),
         }
-
     }
 }

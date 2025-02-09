@@ -51,7 +51,7 @@ impl Repository<Permission> for PermissionDieselRepository {
         }
     }
 
-    fn find_by_id(&mut self, id: Uuid) -> Option<Permission> {
+    fn find_by_id(&mut self, id: Uuid) -> Result<Option<Permission>, None> {
         let permission_result = self
             .permission_schema
             .filter(permission::id.eq(id))

@@ -13,12 +13,13 @@ use crate::{
     },
     schema::permission,
     shared::application::use_cases::use_case::UseCase,
+    shared::webserver::types::response::WebserviceResponse,
     webserver::config::database::Database,
 };
-use actix_web::{post, web, HttpResponse, Responder};
+use actix_web::{post, web, HttpResponse};
 
 #[post("/create")]
-pub async fn create(payload: web::Json<AddPermissionUseCaseInputDto>) -> impl Responder {
+pub async fn create(payload: web::Json<AddPermissionUseCaseInputDto>) -> WebserviceResponse {
     let pool = Database::get_pool();
     let permission_repository =
         PermissionDieselRepository::new(pool.get().unwrap(), permission::table);
@@ -27,19 +28,13 @@ pub async fn create(payload: web::Json<AddPermissionUseCaseInputDto>) -> impl Re
     let result = add_permission.execute(payload.0);
 
     match result {
-        Ok(permission) => HttpResponse::Ok().json(permission),
-        Err(message) => {
-            if message == "Permission already exists" {
-                HttpResponse::Conflict().body(message)
-            } else {
-                HttpResponse::BadRequest().body(message)
-            }
-        }
+        Ok(permission) => Ok(HttpResponse::Ok().json(permission)),
+        Err(err) => Err(err),
     }
 }
 
 #[post("/update")]
-pub async fn update(payload: web::Json<UpdatePermissionUseCaseInputDto>) -> impl Responder {
+pub async fn update(payload: web::Json<UpdatePermissionUseCaseInputDto>) -> WebserviceResponse {
     let pool = Database::get_pool();
     let permission_repository =
         PermissionDieselRepository::new(pool.get().unwrap(), permission::table);
@@ -48,13 +43,13 @@ pub async fn update(payload: web::Json<UpdatePermissionUseCaseInputDto>) -> impl
     let result = update_permission.execute(payload.0);
 
     match result {
-        Ok(_) => HttpResponse::Ok().body("OK"),
-        Err(message) => HttpResponse::BadRequest().body(message),
+        Ok(_) => Ok(HttpResponse::Ok().body("OK")),
+        Err(err) => Err(err),
     }
 }
 
 #[post("/delete")]
-pub async fn delete(payload: web::Json<DeletePermissionUseCaseInputDto>) -> impl Responder {
+pub async fn delete(payload: web::Json<DeletePermissionUseCaseInputDto>) -> WebserviceResponse {
     let pool = Database::get_pool();
     let permission_repository =
         PermissionDieselRepository::new(pool.get().unwrap(), permission::table);
@@ -63,8 +58,8 @@ pub async fn delete(payload: web::Json<DeletePermissionUseCaseInputDto>) -> impl
     let result = delete_permission.execute(payload.0);
 
     match result {
-        Ok(_) => HttpResponse::Ok().body("OK"),
-        Err(message) => HttpResponse::BadRequest().body(message),
+        Ok(_) => Ok(HttpResponse::Ok().body("OK")),
+        Err(err) => Err(err),
     }
 }
 

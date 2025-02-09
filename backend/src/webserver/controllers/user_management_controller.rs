@@ -7,7 +7,10 @@ use crate::{
     core::application::use_cases::update_user::UpdateUserUseCase,
     core::application::use_cases::update_user::UpdateUserUseCaseInputDto,
     core::infra::db::diesel::user::user_repository::UserDieselRepository, schema::user,
-    shared::application::use_cases::use_case::UseCase, webserver::config::database::Database,
+    shared::application::use_cases::use_case::UseCase,
+    shared::webserver::errors::webservice_error::WebserviceError,
+    shared::webserver::types::response::WebserviceResponse,
+    webserver::config::database::Database,
 };
 use actix_session::Session;
 use actix_web::{delete, get, post, put, web, HttpResponse, Responder};
@@ -29,7 +32,7 @@ pub async fn sign_up(
 pub async fn update(
     session: Session,
     payload: web::Json<UpdateUserUseCaseInputDto>,
-) -> impl Responder {
+) -> WebserviceResponse {
     let pool = Database::get_pool();
     let user_repository = UserDieselRepository::new(pool.get().unwrap(), user::table);
     let mut update_user = UpdateUserUseCase::new(session, Box::new(user_repository));
@@ -37,30 +40,27 @@ pub async fn update(
     let result = update_user.execute(payload.0);
 
     match result {
-        Ok(user) => HttpResponse::Ok().json(user),
-        Err(message) => {
-            if message == "User not found" {
-                HttpResponse::NotFound().body(message)
-            } else {
-                HttpResponse::BadRequest().body(message)
-            }
-        }
+        Ok(result_data) => Ok(HttpResponse::Ok().json(result_data)),
+        Err(message) => Err(message),
     }
 }
 
 #[get("/list")]
-pub async fn list(session: Session) -> impl Responder {
+pub async fn list(session: Session) -> WebserviceResponse {
     let pool = Database::get_pool();
     let user_repository = UserDieselRepository::new(pool.get().unwrap(), user::table);
     let mut list_users = ListUserUseCase::new(session, Box::new(user_repository));
 
     let users = list_users.execute(());
 
-    HttpResponse::Ok().json(users)
+    match users {
+        Ok(users) => Ok(HttpResponse::Ok().json(users)),
+        Err(message) => Err(message),
+    }
 }
 
 #[get("/find-user/{id}")]
-pub async fn find(session: Session, path: web::Path<String>) -> impl Responder {
+pub async fn find(session: Session, path: web::Path<String>) -> WebserviceResponse {
     let pool = Database::get_pool();
     let user_repository = UserDieselRepository::new(pool.get().unwrap(), user::table);
     let mut find_user = FindUserUseCase::new(session, Box::new(user_repository));
@@ -68,19 +68,19 @@ pub async fn find(session: Session, path: web::Path<String>) -> impl Responder {
     let id = path.into_inner();
 
     if id.is_empty() {
-        return HttpResponse::BadRequest().body("Id is required");
+        return Err(WebserviceError::BadRequest("Id is required".to_string()));
     }
 
     let user = find_user.execute(id);
 
     match user {
-        Ok(user) => HttpResponse::Ok().json(user),
-        Err(message) => HttpResponse::NotFound().body(message),
+        Ok(user) => Ok(HttpResponse::Ok().json(user)),
+        Err(message) => Err(message),
     }
 }
 
 #[delete("/delete/{id}")]
-pub async fn delete(session: Session, path: web::Path<String>) -> impl Responder {
+pub async fn delete(session: Session, path: web::Path<String>) -> WebserviceResponse {
     let pool = Database::get_pool();
     let user_repository = UserDieselRepository::new(pool.get().unwrap(), user::table);
     let mut delete_user = DeleteUserUseCase::new(session, Box::new(user_repository));
@@ -88,20 +88,14 @@ pub async fn delete(session: Session, path: web::Path<String>) -> impl Responder
     let id = path.into_inner();
 
     if id.is_empty() {
-        return HttpResponse::BadRequest().body("Id is required");
+        return Err(WebserviceError::BadRequest("Id is required".to_string()));
     }
 
     let delete_result = delete_user.execute(id);
 
     match delete_result {
-        Ok(_) => HttpResponse::Ok().body("User deleted"),
-        Err(message) => {
-            if message == "User not found" {
-                HttpResponse::NotFound().body(message)
-            } else {
-                HttpResponse::BadRequest().body(message)
-            }
-        }
+        Ok(_) => Ok(HttpResponse::Ok().body("OK")),
+        Err(error) => Err(error),
     }
 }
 

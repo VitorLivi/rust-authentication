@@ -24,8 +24,6 @@ impl<'a> Authenticator<'a> {
 
         let user_id = user.get_id();
 
-        println!("User id: {:?}", user_id);
-
         if user_id.is_none() {
             self.session.clear();
             return false;
