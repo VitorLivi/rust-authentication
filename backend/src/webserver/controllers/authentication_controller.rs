@@ -3,7 +3,7 @@ use crate::shared::application::use_cases::use_case::UseCase;
 use ::actix_web::web;
 use actix_session::Session;
 use actix_web::web::Json;
-use actix_web::{post, web::ServiceConfig, HttpResponse, Responder};
+use actix_web::{post, web::ServiceConfig, HttpResponse};
 
 use crate::core::application::use_cases::authenticate_user::{
     AuthenticateUserUseCase, AuthenticateUserUseCaseInputDto,

@@ -17,21 +17,19 @@ impl CreateGroupUseCaseInputDto {
 }
 
 pub struct CreateGroupUseCase {
-    permission_repository: Box<dyn GroupRepository + 'static>,
+    group_repository: Box<dyn GroupRepository + 'static>,
 }
 
 impl CreateGroupUseCase {
-    pub fn new(permission_repository: Box<dyn GroupRepository + 'static>) -> CreateGroupUseCase {
-        CreateGroupUseCase {
-            permission_repository,
-        }
+    pub fn new(group_repository: Box<dyn GroupRepository + 'static>) -> CreateGroupUseCase {
+        CreateGroupUseCase { group_repository }
     }
 }
 
 impl UseCase<CreateGroupUseCaseInputDto, Result<(), WebserviceError>> for CreateGroupUseCase {
     fn execute(&mut self, input: CreateGroupUseCaseInputDto) -> Result<(), WebserviceError> {
         let group = Group::new(None, input.name.clone());
-        let result = self.permission_repository.save(group);
+        let result = self.group_repository.save(group);
 
         match result {
             Ok(_) => Ok(()),

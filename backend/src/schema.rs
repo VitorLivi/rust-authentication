@@ -1,6 +1,16 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    group (id) {
+        id -> Uuid,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+        #[max_length = 255]
+        name -> Varchar,
+    }
+}
+
+diesel::table! {
     permission (id) {
         id -> Uuid,
         created_at -> Timestamp,
@@ -31,4 +41,4 @@ diesel::table! {
     }
 }
 
-diesel::allow_tables_to_appear_in_same_query!(permission, user);
+diesel::allow_tables_to_appear_in_same_query!(permission, user, group);
